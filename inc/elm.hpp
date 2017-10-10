@@ -14,18 +14,19 @@ class Elm
 {
     private:
 
-    gsl_matrix* random_weights;
-    gsl_matrix* output_weights;
-    gsl_matrix* hidden_layer_outputs;
-
+    gsl_matrix_float* random_weights;
+    gsl_matrix_float* random_bias;
+    gsl_matrix_float* output_weights;
+    gsl_matrix_float* hidden_layer_outputs;
+    
     public:
     
     Elm();
     float ActivationFunction(float arg);
-    void TrainElm(const gsl_matrix &batch_input, const gsl_matrix &target);
-    void NetworkOutput(const gsl_matrix &input, gsl_matrix* output);
+    void TrainElm(const gsl_matrix_float &batch_input, const gsl_matrix_float &target);
+    void NetworkOutput(const gsl_matrix_float &input, gsl_matrix_float* output);
     void SetRandomWeights(const float *weights);
-    void HiddenLayerOutput(const gsl_matrix &samples);
+    void HiddenLayerOutput(const gsl_matrix_float* samples);
     
 };
 
