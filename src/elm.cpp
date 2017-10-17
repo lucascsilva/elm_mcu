@@ -13,7 +13,6 @@ Elm::~Elm()
     gsl_matrix_free(random_weights);
     gsl_matrix_free(random_bias);
     gsl_matrix_free(output_weights);
-
 }
 
 void Elm::SetRandomWeights(const double *weights)

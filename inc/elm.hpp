@@ -6,7 +6,7 @@
 #define NUM_INPUT_NEURONS   3
 #define NUM_HIDDEN_NEURONS  10
 #define NUM_HIDDEN_LAYERS   1
-#define NUM_OUTPUT_NEURONS  4
+#define NUM_OUTPUT_NEURONS  5
 #define NUM_SAMPLES         20
 
 
