@@ -16,7 +16,7 @@ int main(void)
     DigitalIn train_orange(PE_0,PullDown);
     DigitalIn train_green(PE_1,PullDown);
     DigitalIn train_red(PE_2,PullDown);
-    DigitalIn train_blue(PE_3,PullDown);
+    DigitalIn train_blue(PE_4,PullDown);
 
     Serial pc(USBTX,USBRX);
     
