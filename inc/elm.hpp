@@ -25,7 +25,7 @@ class Elm
     double ActivationFunction(double arg);
     void TrainElm(const gsl_matrix* batch_input, const gsl_matrix* target);
     void NetworkOutput(const gsl_matrix* input, gsl_matrix* output);
-    void SetRandomWeights(const double *weights);
+    void SetRandomWeights(void);
     void HiddenLayerOutput(const gsl_matrix* samples, gsl_matrix* hidden_layer_outputs);
     
 };

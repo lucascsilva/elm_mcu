@@ -17,6 +17,8 @@ int main(void)
     DigitalIn train_green(PE_1,PullDown);
     DigitalIn train_red(PE_2,PullDown);
     DigitalIn train_blue(PE_3,PullDown);
+
+    Serial pc(USBTX,USBRX);
     
     Elm elm_network;
     Lis3dh mems;
@@ -32,25 +34,29 @@ int main(void)
     samples = gsl_matrix_alloc(NUM_INPUT_NEURONS,NUM_SAMPLES);
     target = gsl_matrix_calloc(NUM_SAMPLES,NUM_OUTPUT_NEURONS);
 
-
+    blue_led=1;
     while(!train_button);
+    blue_led=0;
     
+    pc.printf("Sampling started");
+    wait(0.2);
     green_led=1;
 
     while(samples_count<NUM_SAMPLES)
     {
         while(!train_button);
+        wait(0.2);
         green_led=0;
         orange_led=1;
         mems.update();
-        gsl_matrix_set(samples, 0, NUM_SAMPLES,(double)mems.getX());
-        gsl_matrix_set(samples, 1, NUM_SAMPLES,(double)mems.getY());
-        gsl_matrix_set(samples, 2, NUM_SAMPLES,(double)mems.getZ());
-        gsl_matrix_set(target, NUM_SAMPLES, 0, train_orange);
-        gsl_matrix_set(target, NUM_SAMPLES, 1, train_green);
-        gsl_matrix_set(target, NUM_SAMPLES, 2, train_blue);
-        gsl_matrix_set(target, NUM_SAMPLES, 3, train_red);
-        gsl_matrix_set(target, NUM_SAMPLES, 4, !(train_orange|train_green|train_blue|train_red));
+        gsl_matrix_set(samples, 0, samples_count,(double)mems.getX());
+        gsl_matrix_set(samples, 1, samples_count,(double)mems.getY());
+        gsl_matrix_set(samples, 2, samples_count,(double)mems.getZ());
+        gsl_matrix_set(target, samples_count, 0, train_orange);
+        gsl_matrix_set(target, samples_count, 1, train_green);
+        gsl_matrix_set(target, samples_count, 2, train_blue);
+        gsl_matrix_set(target, samples_count, 3, train_red);
+        gsl_matrix_set(target, samples_count, 4, !(train_orange|train_green|train_blue|train_red));//active if no button pressed
         samples_count++;
         orange_led=0;
         green_led=1;
@@ -60,8 +66,11 @@ int main(void)
 
     //training
     red_led=1;
+    pc.printf("Training started");
     elm_network.TrainElm(samples,target);
+    pc.printf("Training finished");
     red_led=0;
+    
 
     gsl_matrix_free(samples);
     gsl_matrix_free(target);
@@ -72,6 +81,7 @@ int main(void)
 
     while(1)
     {   
+        wait(0.5);
         mems.update();    
         gsl_matrix_set(sample, 0, 0,(double)mems.getX());
         gsl_matrix_set(sample, 1, 0,(double)mems.getY());
