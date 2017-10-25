@@ -1,6 +1,6 @@
 #include "mems.hpp"
 
-SPI spi_mems(PA_7, PA_6, PA_5);
+SPI spi_mems(SPI_MOSI, SPI_MISO, SPI_SCK);
 DigitalOut cs(PE_3,1);
 
 void Lis3dh::update(void)

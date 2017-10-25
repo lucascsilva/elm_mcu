@@ -13,10 +13,10 @@ int main(void)
     DigitalOut blue_led(LED6,0);
 
     DigitalIn train_button(USER_BUTTON);
-    DigitalIn train_orange(PE_0,PullDown);
-    DigitalIn train_green(PE_1,PullDown);
-    DigitalIn train_red(PE_2,PullDown);
-    DigitalIn train_blue(PE_4,PullDown);
+    DigitalIn train_orange(PB_11,PullDown);
+    DigitalIn train_green(PB_12,PullDown);
+    DigitalIn train_red(PB_13,PullDown);
+    DigitalIn train_blue(PB_14,PullDown);
 
     Serial pc(USBTX,USBRX);
     
@@ -29,8 +29,10 @@ int main(void)
     OutputData output_data;
 
     uint8_t samples_count=0;
+
+    if(mems.read(CTRL_REG1)!= CTRL_REG1_CONFIG)
+        mems.write(CTRL_REG1, CTRL_REG1_CONFIG);
     
-    mems.write(CTRL_REG1, CTRL_REG1_CONFIG);
     samples = gsl_matrix_alloc(NUM_INPUT_NEURONS,NUM_SAMPLES);
     target = gsl_matrix_calloc(NUM_SAMPLES,NUM_OUTPUT_NEURONS);
 
