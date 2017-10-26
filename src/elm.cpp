@@ -8,6 +8,7 @@ Elm::Elm()
     random_bias = gsl_matrix_alloc(NUM_HIDDEN_LAYERS, NUM_HIDDEN_NEURONS);
     output_weights = gsl_matrix_alloc(NUM_HIDDEN_NEURONS, NUM_OUTPUT_NEURONS);
     SetRandomWeights();
+    SetRandomBias();
 }
 
 Elm::~Elm()
@@ -126,7 +127,7 @@ void Elm::HiddenLayerOutput(const gsl_matrix* samples, gsl_matrix* hidden_layer_
                 sum_arg+=arg;
             }
             sum_arg+=gsl_matrix_get(random_bias,0,col_counter); //bias
-            gsl_matrix_set(hidden_layer_outputs,row_counter, col_counter, ActivationFunction(arg));
+            gsl_matrix_set(hidden_layer_outputs,row_counter, col_counter, ActivationFunction(sum_arg));
             sum_arg=0;
         }   
     }

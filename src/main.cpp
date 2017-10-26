@@ -56,9 +56,9 @@ int main(void)
         gsl_matrix_set(samples, 2, samples_count,(double)mems.getZ());
         gsl_matrix_set(target, samples_count, 0, train_orange);
         gsl_matrix_set(target, samples_count, 1, train_green);
-        gsl_matrix_set(target, samples_count, 2, train_blue);
-        gsl_matrix_set(target, samples_count, 3, train_red);
-        gsl_matrix_set(target, samples_count, 4, !(train_orange|train_green|train_blue|train_red));//active if no button pressed
+        //gsl_matrix_set(target, samples_count, 2, train_blue);
+        //gsl_matrix_set(target, samples_count, 3, train_red);
+        //gsl_matrix_set(target, samples_count, 4, !(train_orange|train_green|train_blue|train_red));//active if no button pressed
         samples_count++;
         orange_led=0;
         green_led=1;
