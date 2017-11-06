@@ -43,11 +43,11 @@ class Elm
      */ 
     gsl_matrix* random_weights;
     /**
-     * @brief bias to the hidden layer neurons
+     * @brief Bias to the hidden layer neurons
      * */
     gsl_matrix* random_bias;
     /**
-     * @brief Weight connections from hidden layer to output layer
+     * @brief Weight of connections from hidden layer to output layer
      */ 
     gsl_matrix* output_weights;
     
