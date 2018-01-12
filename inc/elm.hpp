@@ -6,7 +6,9 @@
 #ifndef __ELM_HPP__
 #define __ELM_HPP__
 
-#include "matrix_manipulation.h"
+#include "gsl/gsl_blas.h"
+#include "gsl/gsl_linalg.h"
+
 /**
  * @addtogroup elm ELM API
  * @{
@@ -114,5 +116,7 @@ class Elm
      */
 
 };
+
+gsl_matrix* moore_penrose_pinv(gsl_matrix *A, const double rcond);
 
 #endif

@@ -1,5 +1,4 @@
 #include "mbed.h"
-#include "matrix_manipulation.h"
 #include "mems.hpp"
 #include "elm.hpp"
 #include "config.h"
