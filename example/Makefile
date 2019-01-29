@@ -13,13 +13,13 @@
 # limitations under the License.
 PROJECT         := ELM
 DEVICES         := DISCO_F407VG
-VERBOSE 	:= 1
+VERBOSE 	    := 1
 GCC4MBED_DIR    := ../../../gcc4mbed
 GCC4MBED_TYPE 	:= Release
 NO_FLOAT_SCANF  := 1
 NO_FLOAT_PRINTF := 1
-USER_LIBS	:= ../src ../inc
-INCDIRS		:= inc ../inc
+USER_LIBS	    := ../src ../inc
+INCDIRS		    := inc ../inc
 LIBS_PREFIX 	:= ../lib/libgsl.a ../lib/libgslcblas.a
 LIBS_SUFFIX 	:= ../lib/libgsl.a ../lib/libgslcblas.a
 
