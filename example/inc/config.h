@@ -15,6 +15,6 @@ typedef enum _OutputLed
     OUTPUT_LED_RED,
     OUTPUT_LED_BLUE,
     OUTPUT_LED_ALL
-}OutputLEd;
+}OutputLed;
 
 #endif
