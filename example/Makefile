@@ -13,7 +13,7 @@
 # limitations under the License.
 PROJECT         := ELM
 DEVICES         := DISCO_F407VG
-VERBOSE 	    := 1
+VERBOSE 	    := 0
 GCC4MBED_DIR    := ../../../gcc4mbed
 GCC4MBED_TYPE 	:= Release
 NO_FLOAT_SCANF  := 1

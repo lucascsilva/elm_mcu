@@ -147,7 +147,7 @@ void Elm::TrainElm(const gsl_matrix* batch_input, const gsl_matrix* target)
 
     HiddenLayerOutput(batch_input, hidden_layer_outputs);
 
-    h_pseudo_inverse = moore_penrose_pinv(hidden_layer_outputs, 1e-6);
+    h_pseudo_inverse = MoorePenrosePinv(hidden_layer_outputs, 1e-6);
     //output weights calculation
     gsl_blas_dgemm(CblasNoTrans,CblasNoTrans,1,h_pseudo_inverse,target,0,output_weights);
 
@@ -156,7 +156,7 @@ void Elm::TrainElm(const gsl_matrix* batch_input, const gsl_matrix* target)
 }
 
 
-gsl_matrix* moore_penrose_pinv(gsl_matrix *A, const double rcond) 
+gsl_matrix* Elm::MoorePenrosePinv(gsl_matrix *A, const double rcond) 
 {
 
 	gsl_matrix *V, *Sigma_pinv, *U, *A_pinv;

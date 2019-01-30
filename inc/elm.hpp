@@ -112,11 +112,20 @@ class Elm
      **/
     void HiddenLayerOutput(const gsl_matrix* samples, gsl_matrix* hidden_layer_outputs);
     /**
+     * @brief 
+     * 
+     * @param 
+     * @param  
+     * @return
+     **/
+    gsl_matrix* MoorePenrosePinv(gsl_matrix *A, const double rcond);
+    /**
      * @}
      */
+    
 
 };
 
-gsl_matrix* moore_penrose_pinv(gsl_matrix *A, const double rcond);
+
 
 #endif
