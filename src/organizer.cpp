@@ -25,11 +25,11 @@ void Organizer::setTarget()
 
 gsl_matrix* Organizer::getSample(void)
 {
-
+    return 0;
 }
 
 gsl_matrix* Organizer::getTarget(void)
 {
-
+    return 0;
 }
 

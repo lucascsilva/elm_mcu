@@ -15,10 +15,12 @@ class Organizer
     gsl_matrix* samples;
     gsl_matrix* target;
     public:
+    Organizer();
+    ~Organizer();
     void storeSamples();
     void setTarget();
     gsl_matrix* getSample(void);
     gsl_matrix* getTarget(void);
-}
+};
 
 #endif
