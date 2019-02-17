@@ -2,6 +2,7 @@
 #define __DATA_CONVERTER_HPP__
 
 #include <array>
+#include <cstring>
 
 typedef enum _ConversionStatus
 {
@@ -13,16 +14,19 @@ class DataConverter
 {
     private:
 
-    std::array<uint32_t,4> float_bytes;
+    std::array<uint8_t,4> float_bytes;
     uint8_t float_byte_counter; 
     float float_conversion;
+    uint32_t merged_bytes;
     ConversionStatus conversion_status; 
 
     public:
 
-    void addByte(uint32_t byte);
+    DataConverter();
+    void addByte(uint8_t byte);
     void floatConversion(void);
     float getConvertedFloat(void);
+    ConversionStatus getConversionStatus(void);
 };
 
 #endif

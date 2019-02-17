@@ -2,11 +2,23 @@
 #include "mems.hpp"
 #include "elm.hpp"
 #include "config.h"
+#include "data_converter.hpp"
 
 
 int main(void) 
 {   
-    DigitalOut orange_led(LED3,0);
+    Serial uart(USBTX,USBRX,9600);
+    DataConverter float_converter;
+    float result;
+    while(true)
+    {
+        if(uart.readable())
+            float_converter.addByte(uart.getc());         
+        if(float_converter.getConversionStatus()==COMPLETE)
+            result = float_converter.getConvertedFloat(); 
+    }
+}
+    /*DigitalOut orange_led(LED3,0);
     DigitalOut green_led(LED4,0);
     DigitalOut red_led(LED5,0);
     DigitalOut blue_led(LED6,0);
@@ -17,8 +29,6 @@ int main(void)
     DigitalIn train_red(PB_13,PullDown);
     DigitalIn train_blue(PB_14,PullDown);
 
-    Serial pc(USBTX,USBRX);
-    
     Elm elm_network;
     Lis3dh mems;
     gsl_matrix *samples; 
@@ -122,5 +132,4 @@ int main(void)
                 red_led=1;
                 break;
         }
-    }
-}
+    }*/

@@ -1,6 +1,13 @@
 #include "data_converter.hpp"
 
-void DataConverter::addByte(uint32_t byte)
+DataConverter::DataConverter()
+    :float_byte_counter(0),
+    conversion_status(RECEIVING_BYTES) 
+{
+    
+}
+
+void DataConverter::addByte(uint8_t byte)
 {
     switch(conversion_status)
     {
@@ -22,13 +29,15 @@ void DataConverter::addByte(uint32_t byte)
 
 void DataConverter::floatConversion(void)
 {   
-    float_conversion=(float)(float_bytes[0] + (float_bytes[1]<<8) + (float_bytes[2]<<16) + (float_bytes[3]<<24));
+    std::memcpy(&float_conversion, &float_bytes, float_bytes.size());
 }
 
 float DataConverter::getConvertedFloat(void)
 {
-    if (conversion_status == COMPLETE);
         return float_conversion;
-    else
-        return NULL
+}
+
+ConversionStatus DataConverter::getConversionStatus(void)
+{
+    return conversion_status;
 }
