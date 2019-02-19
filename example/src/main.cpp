@@ -3,19 +3,21 @@
 #include "elm.hpp"
 #include "config.h"
 #include "data_converter.hpp"
+#include "organizer.hpp"
 
 
 int main(void) 
 {   
     Serial uart(USBTX,USBRX,9600);
     DataConverter float_converter;
-    float result;
-    while(true)
+    Organizer data_organizer;
+
+    while(data_organizer.getSamplesCount()<NUM_SAMPLES)
     {
         if(uart.readable())
             float_converter.addByte(uart.getc());         
         if(float_converter.getConversionStatus()==COMPLETE)
-            result = float_converter.getConvertedFloat(); 
+            data_organizer.buildSample(float_converter.getConvertedFloat()); 
     }
 }
     /*DigitalOut orange_led(LED3,0);

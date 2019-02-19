@@ -34,7 +34,7 @@
 /**
  * @brief Size of the training set.
  */
-#define NUM_SAMPLES         40
+#define NUM_SAMPLES         2
 
 
 class Elm 
