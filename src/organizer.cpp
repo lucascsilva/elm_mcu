@@ -56,6 +56,16 @@ void Organizer::setTarget(void)
     targets_count++;
 }
 
+uint16_t Organizer::getSampleCount(void)
+{
+    return sample_count;
+}
+
+uint16_t Organizer::getTargetCount(void)
+{
+    return targets_count;
+}a
+
 uint16_t Organizer::getSamplesCount(void)
 {
     return samples_count;

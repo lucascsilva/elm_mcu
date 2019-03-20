@@ -32,6 +32,8 @@ class Organizer
     void buildTarget(float value);
     void storeSample(void);
     void setTarget(void);
+    uint16_t getSamplecount(void);
+    uint16_t getTargetCount(void);
     uint16_t getSamplesCount(void);
     uint16_t getTargetsCount(void);
     gsl_matrix* getSamples(void);

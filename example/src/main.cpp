@@ -9,17 +9,51 @@
 int main(void) 
 {   
     Serial uart(USBTX,USBRX,9600);
-    DataConverter float_converter;
-    Organizer data_organizer;
+    Organizer training_set_organizer;
 
-    while(data_organizer.getSamplesCount()<NUM_SAMPLES)
+    //samples
     {
-        if(uart.readable())
-            float_converter.addByte(uart.getc());         
-        if(float_converter.getConversionStatus()==COMPLETE)
-            data_organizer.buildSample(float_converter.getConvertedFloat()); 
+        DataConverter float_converter;
+        while(training_set_organizer.getSamplesCount()<NUM_SAMPLES)
+        {
+            if(uart.readable())
+                float_converter.addByte(uart.getc());         
+            if(float_converter.getConversionStatus()==COMPLETE)
+                training_set_organizer.buildSample(float_converter.getConvertedFloat()); 
+        }
+    }
+    //targets
+    {
+        DataConverter float_converter;
+        while(data_organizer.getTargetsCount()<NUM_SAMPLES)
+        {
+            if(uart.readable())
+                float_converter.addByte(uart.getc());         
+            if(float_converter.getConversionStatus()==COMPLETE)
+                training_set__organizer.buildTarget(float_converter.getConvertedFloat()); 
+        }
+    }
+
+    Elm elm_network;
+    //training
+    elm_network.TrainElm(data_organizer.getSamples(),data_organizer.getTargets());
+
+    //running
+    while(1)
+    {
+        Organizer test_sample
+        DataConverter float_converter;
+        while(test_sample.getSampleCount() < NUM_INPUT_NEURONS)
+        {
+            if(uart.readable())
+                float_converter.addByte(uart.getc());         
+            if(float_converter.getConversionStatus()==COMPLETE)
+                test_sample.buildSample(float_converter.getConvertedFloat()); 
+        }
     }
 }
+
+
     /*DigitalOut orange_led(LED3,0);
     DigitalOut green_led(LED4,0);
     DigitalOut red_led(LED5,0);
