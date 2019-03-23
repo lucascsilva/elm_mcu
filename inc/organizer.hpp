@@ -11,6 +11,18 @@
 #include "gsl/gsl_linalg.h"
 #include "elm.hpp"
 
+typedef enum _Mode
+{
+    TRAIN = 0,
+    TEST
+}Mode;
+
+typedef struct _OutputData
+{
+    gsl_matrix *output;
+    size_t row_max;
+    size_t col_max;
+}OutputData;
 
 class Organizer
 {
@@ -19,6 +31,7 @@ class Organizer
     std::array<float, NUM_OUTPUT_NEURONS> target;
     gsl_matrix* samples;
     gsl_matrix* targets;
+    gsl_matrix* test_sample;
     uint16_t sample_count;
     uint16_t target_count;
     uint16_t samples_count;
@@ -28,16 +41,17 @@ class Organizer
     public:
     Organizer();
     ~Organizer();
-    void buildSample(float value);
+    void buildSample(float value, Mode mode);
     void buildTarget(float value);
-    void storeSample(void);
+    void storeSample(Mode mode);
     void setTarget(void);
-    uint16_t getSamplecount(void);
+    uint16_t getSampleCount(void);
     uint16_t getTargetCount(void);
     uint16_t getSamplesCount(void);
     uint16_t getTargetsCount(void);
     gsl_matrix* getSamples(void);
     gsl_matrix* getTargets(void);
+    gsl_matrix* getTestSample(void);
 };
 
 #endif

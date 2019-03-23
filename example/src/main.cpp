@@ -19,37 +19,39 @@ int main(void)
             if(uart.readable())
                 float_converter.addByte(uart.getc());         
             if(float_converter.getConversionStatus()==COMPLETE)
-                training_set_organizer.buildSample(float_converter.getConvertedFloat()); 
+                training_set_organizer.buildSample(float_converter.getConvertedFloat(),TRAIN); 
         }
     }
     //targets
     {
         DataConverter float_converter;
-        while(data_organizer.getTargetsCount()<NUM_SAMPLES)
+        while(training_set_organizer.getTargetsCount()<NUM_SAMPLES)
         {
             if(uart.readable())
                 float_converter.addByte(uart.getc());         
             if(float_converter.getConversionStatus()==COMPLETE)
-                training_set__organizer.buildTarget(float_converter.getConvertedFloat()); 
+                training_set_organizer.buildTarget(float_converter.getConvertedFloat()); 
         }
     }
 
     Elm elm_network;
     //training
-    elm_network.TrainElm(data_organizer.getSamples(),data_organizer.getTargets());
+    elm_network.TrainElm(training_set_organizer.getSamples(),training_set_organizer.getTargets());
 
     //running
     while(1)
     {
-        Organizer test_sample
+        Organizer test_sample;
         DataConverter float_converter;
+        OutputData output_data;
         while(test_sample.getSampleCount() < NUM_INPUT_NEURONS)
         {
             if(uart.readable())
                 float_converter.addByte(uart.getc());         
             if(float_converter.getConversionStatus()==COMPLETE)
-                test_sample.buildSample(float_converter.getConvertedFloat()); 
+                test_sample.buildSample(float_converter.getConvertedFloat(),TEST); 
         }
+        elm_network.NetworkOutput(test_sample.getTestSample(),output_data.output);
     }
 }
 

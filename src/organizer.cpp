@@ -9,6 +9,7 @@ targets_count(0)
 {
     samples = gsl_matrix_alloc(NUM_INPUT_NEURONS,NUM_SAMPLES);
     targets = gsl_matrix_calloc(NUM_SAMPLES,NUM_OUTPUT_NEURONS);
+    test_sample = gsl_matrix_calloc(NUM_INPUT_NEURONS,1);
 }
 
 Organizer::~Organizer()
@@ -18,12 +19,12 @@ Organizer::~Organizer()
 }
 
 
-void Organizer::buildSample(float value)
+void Organizer::buildSample(float value, Mode mode)
 {
     sample[sample_count++]=value;
     if(sample_count == sample.size())
     {
-        storeSample();
+        storeSample(mode);
         sample_count=0;
     }      
 }
@@ -38,11 +39,19 @@ void Organizer::buildTarget(float value)
     }       
 }
 
-void Organizer::storeSample(void)
+void Organizer::storeSample(Mode mode)
 {
     for (uint16_t row = 0; row < NUM_INPUT_NEURONS; row++)
     {
-        gsl_matrix_set(samples, row, samples_count, sample[row]);
+        switch(mode)
+        {
+            case TRAIN:
+                gsl_matrix_set(samples, row, samples_count, sample[row]);
+                break;
+            case TEST:
+                gsl_matrix_set(test_sample, row, 1, sample[row]);
+                break;
+        }
     }  
     samples_count++; 
 }
@@ -56,6 +65,7 @@ void Organizer::setTarget(void)
     targets_count++;
 }
 
+
 uint16_t Organizer::getSampleCount(void)
 {
     return sample_count;
@@ -64,7 +74,7 @@ uint16_t Organizer::getSampleCount(void)
 uint16_t Organizer::getTargetCount(void)
 {
     return targets_count;
-}a
+}
 
 uint16_t Organizer::getSamplesCount(void)
 {
@@ -86,3 +96,7 @@ gsl_matrix* Organizer::getTargets(void)
     return targets;
 }
 
+gsl_matrix* Organizer::getTestSample(void)
+{
+    return test_sample;
+}
