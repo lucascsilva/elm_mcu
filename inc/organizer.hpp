@@ -52,6 +52,7 @@ class Organizer
     gsl_matrix* getSamples(void);
     gsl_matrix* getTargets(void);
     gsl_matrix* getTestSample(void);
+    void resetSamplesCount(void);
 };
 
 #endif

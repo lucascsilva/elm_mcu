@@ -16,6 +16,7 @@ Organizer::~Organizer()
 {
     gsl_matrix_free(samples);
     gsl_matrix_free(targets);
+    gsl_matrix_free(test_sample);
 }
 
 
@@ -49,7 +50,7 @@ void Organizer::storeSample(Mode mode)
                 gsl_matrix_set(samples, row, samples_count, sample[row]);
                 break;
             case TEST:
-                gsl_matrix_set(test_sample, row, 1, sample[row]);
+                gsl_matrix_set(test_sample, row, 0, sample[row]);
                 break;
         }
     }  
@@ -99,4 +100,9 @@ gsl_matrix* Organizer::getTargets(void)
 gsl_matrix* Organizer::getTestSample(void)
 {
     return test_sample;
+}
+
+void Organizer::resetSamplesCount(void)
+{
+    samples_count=0;
 }

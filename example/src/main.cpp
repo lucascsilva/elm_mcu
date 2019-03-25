@@ -17,9 +17,11 @@ int main(void)
         while(training_set_organizer.getSamplesCount()<NUM_SAMPLES)
         {
             if(uart.readable())
+            {
                 float_converter.addByte(uart.getc());         
-            if(float_converter.getConversionStatus()==COMPLETE)
-                training_set_organizer.buildSample(float_converter.getConvertedFloat(),TRAIN); 
+                if(float_converter.getConversionStatus()==COMPLETE)
+                    training_set_organizer.buildSample(float_converter.getConvertedFloat(),TRAIN); 
+            }
         }
     }
     //targets
@@ -28,9 +30,11 @@ int main(void)
         while(training_set_organizer.getTargetsCount()<NUM_SAMPLES)
         {
             if(uart.readable())
-                float_converter.addByte(uart.getc());         
-            if(float_converter.getConversionStatus()==COMPLETE)
-                training_set_organizer.buildTarget(float_converter.getConvertedFloat()); 
+            {
+                float_converter.addByte(uart.getc());  
+                if(float_converter.getConversionStatus()==COMPLETE)
+                    training_set_organizer.buildTarget(float_converter.getConvertedFloat());
+            } 
         }
     }
 
@@ -39,19 +43,24 @@ int main(void)
     elm_network.TrainElm(training_set_organizer.getSamples(),training_set_organizer.getTargets());
 
     //running
+    OutputData output_data;
+    output_data.output = gsl_matrix_alloc(1,NUM_OUTPUT_NEURONS);
+    Organizer test_sample;
     while(1)
     {
-        Organizer test_sample;
         DataConverter float_converter;
-        OutputData output_data;
-        while(test_sample.getSampleCount() < NUM_INPUT_NEURONS)
+        while(test_sample.getSamplesCount() < 1)
         {
             if(uart.readable())
+            {
                 float_converter.addByte(uart.getc());         
-            if(float_converter.getConversionStatus()==COMPLETE)
-                test_sample.buildSample(float_converter.getConvertedFloat(),TEST); 
+                if(float_converter.getConversionStatus()==COMPLETE)
+                    test_sample.buildSample(float_converter.getConvertedFloat(),TEST);
+            } 
         }
+        test_sample.resetSamplesCount();
         elm_network.NetworkOutput(test_sample.getTestSample(),output_data.output);
+        test_sample.buildTarget((float) gsl_matrix_get(output_data.output,0,0));
     }
 }
 

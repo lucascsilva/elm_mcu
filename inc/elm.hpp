@@ -18,7 +18,7 @@
  * @brief Number of input neurons. Usually represents the dimension of 
  * the data on which the Neural network will produce outputs.
  */
-#define NUM_INPUT_NEURONS   3
+#define NUM_INPUT_NEURONS   1
 /**
  * @brief Neuron count of the hidden layer
  */
@@ -30,11 +30,11 @@
 /**
  * @brief Neuron count of the output layer.
  */
-#define NUM_OUTPUT_NEURONS  2
+#define NUM_OUTPUT_NEURONS  1
 /**
  * @brief Size of the training set.
  */
-#define NUM_SAMPLES         2
+#define NUM_SAMPLES         40
 
 
 class Elm 
