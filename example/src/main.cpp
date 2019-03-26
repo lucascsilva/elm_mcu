@@ -9,58 +9,66 @@
 int main(void) 
 {   
     Serial uart(USBTX,USBRX,9600);
-    Organizer training_set_organizer;
+    Organizer set;
 
     //samples
     {
         DataConverter float_converter;
-        while(training_set_organizer.getSamplesCount()<NUM_SAMPLES)
+        while(set.getSamplesCount()<NUM_SAMPLES)
         {
             if(uart.readable())
             {
                 float_converter.addByte(uart.getc());         
                 if(float_converter.getConversionStatus()==COMPLETE)
-                    training_set_organizer.buildSample(float_converter.getConvertedFloat(),TRAIN); 
+                    set.buildSample(float_converter.getConvertedFloat(),TRAIN); 
             }
         }
     }
     //targets
     {
         DataConverter float_converter;
-        while(training_set_organizer.getTargetsCount()<NUM_SAMPLES)
+        while(set.getTargetsCount()<NUM_SAMPLES)
         {
             if(uart.readable())
             {
                 float_converter.addByte(uart.getc());  
                 if(float_converter.getConversionStatus()==COMPLETE)
-                    training_set_organizer.buildTarget(float_converter.getConvertedFloat());
+                    set.buildTarget(float_converter.getConvertedFloat());
             } 
         }
     }
 
     Elm elm_network;
     //training
-    elm_network.TrainElm(training_set_organizer.getSamples(),training_set_organizer.getTargets());
-
+    elm_network.TrainElm(set.getSamples(),set.getTargets());
     //running
+
     OutputData output_data;
+    DigitalOut led(LED4);
     output_data.output = gsl_matrix_alloc(1,NUM_OUTPUT_NEURONS);
-    Organizer test_sample;
-    while(1)
+    set.resetSamplesCount();
+    int test_counter=0;
+    while( test_counter< NUM_TEST)
     {
         DataConverter float_converter;
-        while(test_sample.getSamplesCount() < 1)
+        while(set.getSamplesCount() < 1)
         {
             if(uart.readable())
             {
                 float_converter.addByte(uart.getc());         
                 if(float_converter.getConversionStatus()==COMPLETE)
-                    test_sample.buildSample(float_converter.getConvertedFloat(),TEST);
+                    set.buildSample(float_converter.getConvertedFloat(),TEST);
             } 
         }
-        test_sample.resetSamplesCount();
-        elm_network.NetworkOutput(test_sample.getTestSample(),output_data.output);
-        test_sample.buildTarget((float) gsl_matrix_get(output_data.output,0,0));
+        set.resetSamplesCount();
+        elm_network.NetworkOutput(set.getTestSample(),output_data.output);
+        set.setResult((float) gsl_matrix_get(output_data.output,0,0));
+        test_counter++;
+    }
+    while(1)
+    {
+        led=!led;
+        wait(0.5);
     }
 }
 
@@ -78,7 +86,7 @@ int main(void)
 
     Elm elm_network;
     Lis3dh mems;
-    gsl_matrix *samples; 
+    gsl_matrix *set; 
     gsl_matrix *target;
     gsl_matrix *sample;
     
@@ -89,7 +97,7 @@ int main(void)
     if(mems.read(CTRL_REG1)!= CTRL_REG1_CONFIG)
         mems.write(CTRL_REG1, CTRL_REG1_CONFIG);
     
-    samples = gsl_matrix_alloc(NUM_INPUT_NEURONS,NUM_SAMPLES);
+    set = gsl_matrix_alloc(NUM_INPUT_NEURONS,NUM_SAMPLES);
     target = gsl_matrix_calloc(NUM_SAMPLES,NUM_OUTPUT_NEURONS);
 
     blue_led=1;
@@ -107,9 +115,9 @@ int main(void)
         green_led=0;
         orange_led=1;
         mems.update();
-        gsl_matrix_set(samples, 0, samples_count,(double)mems.getX());
-        gsl_matrix_set(samples, 1, samples_count,(double)mems.getY());
-        gsl_matrix_set(samples, 2, samples_count,(double)mems.getZ());
+        gsl_matrix_set(set, 0, samples_count,(double)mems.getX());
+        gsl_matrix_set(set, 1, samples_count,(double)mems.getY());
+        gsl_matrix_set(set, 2, samples_count,(double)mems.getZ());
         gsl_matrix_set(target, samples_count, 0, train_orange);
         gsl_matrix_set(target, samples_count, 1, train_green);
         //gsl_matrix_set(target, samples_count, 2, train_blue);
@@ -125,12 +133,12 @@ int main(void)
     //training
     red_led=1;
     pc.printf("Training started");
-    elm_network.TrainElm(samples,target);
+    elm_network.TrainElm(set,target);
     pc.printf("Training finished");
     red_led=0;
     
 
-    gsl_matrix_free(samples);
+    gsl_matrix_free(set);
     gsl_matrix_free(target);
 
     //after training

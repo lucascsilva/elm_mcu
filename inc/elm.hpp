@@ -36,6 +36,8 @@
  */
 #define NUM_SAMPLES         40
 
+#define NUM_TEST            20
+
 
 class Elm 
 {

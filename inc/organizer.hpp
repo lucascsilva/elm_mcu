@@ -29,13 +29,15 @@ class Organizer
     private:
     std::array<float, NUM_INPUT_NEURONS> sample;
     std::array<float, NUM_OUTPUT_NEURONS> target;
-    gsl_matrix* samples;
+    std::array<float, NUM_TEST> result;
+    gsl_matrix* training_set;
     gsl_matrix* targets;
     gsl_matrix* test_sample;
     uint16_t sample_count;
     uint16_t target_count;
     uint16_t samples_count;
     uint16_t targets_count;
+    uint16_t result_count;
 
     
     public:
@@ -53,6 +55,10 @@ class Organizer
     gsl_matrix* getTargets(void);
     gsl_matrix* getTestSample(void);
     void resetSamplesCount(void);
+    void resetResultCount(void);
+    void setResult(float value);
+    float getResult(int index);
+
 };
 
 #endif
