@@ -2,11 +2,12 @@
 #include "mems.hpp"
 #include "elm.hpp"
 #include "config.h"
+#include "organizer.hpp"
 
 
 int main(void) 
 {   
-    DigitalOut orange_led(LED3,0);
+    /*DigitalOut orange_led(LED3,0);
     DigitalOut green_led(LED4,0);
     DigitalOut red_led(LED5,0);
     DigitalOut blue_led(LED6,0);
@@ -17,11 +18,9 @@ int main(void)
     DigitalIn train_red(PB_13,PullDown);
     DigitalIn train_blue(PB_14,PullDown);
 
-    Serial pc(USBTX,USBRX);
-    
     Elm elm_network;
     Lis3dh mems;
-    gsl_matrix *samples; 
+    gsl_matrix *set; 
     gsl_matrix *target;
     gsl_matrix *sample;
     
@@ -32,7 +31,7 @@ int main(void)
     if(mems.read(CTRL_REG1)!= CTRL_REG1_CONFIG)
         mems.write(CTRL_REG1, CTRL_REG1_CONFIG);
     
-    samples = gsl_matrix_alloc(NUM_INPUT_NEURONS,NUM_SAMPLES);
+    set = gsl_matrix_alloc(NUM_INPUT_NEURONS,NUM_SAMPLES);
     target = gsl_matrix_calloc(NUM_SAMPLES,NUM_OUTPUT_NEURONS);
 
     blue_led=1;
@@ -50,9 +49,9 @@ int main(void)
         green_led=0;
         orange_led=1;
         mems.update();
-        gsl_matrix_set(samples, 0, samples_count,(double)mems.getX());
-        gsl_matrix_set(samples, 1, samples_count,(double)mems.getY());
-        gsl_matrix_set(samples, 2, samples_count,(double)mems.getZ());
+        gsl_matrix_set(set, 0, samples_count,(double)mems.getX());
+        gsl_matrix_set(set, 1, samples_count,(double)mems.getY());
+        gsl_matrix_set(set, 2, samples_count,(double)mems.getZ());
         gsl_matrix_set(target, samples_count, 0, train_orange);
         gsl_matrix_set(target, samples_count, 1, train_green);
         //gsl_matrix_set(target, samples_count, 2, train_blue);
@@ -68,12 +67,12 @@ int main(void)
     //training
     red_led=1;
     pc.printf("Training started");
-    elm_network.TrainElm(samples,target);
+    elm_network.TrainElm(set,target);
     pc.printf("Training finished");
     red_led=0;
     
 
-    gsl_matrix_free(samples);
+    gsl_matrix_free(set);
     gsl_matrix_free(target);
 
     //after training
@@ -122,5 +121,8 @@ int main(void)
                 red_led=1;
                 break;
         }
-    }
+    }*/
 }
+
+
+    
