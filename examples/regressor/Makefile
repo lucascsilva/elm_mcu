@@ -11,21 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-PROJECT         := ELM
+PROJECT         := regressor
 DEVICES         := DISCO_F407VG
 VERBOSE 	    := 0
-GCC4MBED_DIR    := ../../../gcc4mbed
+GCC4MBED_DIR    := ../../../../gcc4mbed
 GCC4MBED_TYPE 	:= Release
 NO_FLOAT_SCANF  := 1
 NO_FLOAT_PRINTF := 1
-USER_LIBS	    := ../src ../inc
-INCDIRS		    := inc ../inc
-LIBS_PREFIX 	:= ../lib/libgsl.a ../lib/libgslcblas.a
-LIBS_SUFFIX 	:= ../lib/libgsl.a ../lib/libgslcblas.a
+USER_LIBS	    := ../../src ../../inc
+INCDIRS		    := inc ../../inc
+LIBS_PREFIX 	:= ../../lib/libgsl.a ../../lib/libgslcblas.a
+LIBS_SUFFIX 	:= ../../lib/libgsl.a ../../lib/libgslcblas.a
 
 
 include $(GCC4MBED_DIR)/build/gcc4mbed.mk
 
 burn:
-	openocd -f "stm32f4discovery.cfg" -c "program DISCO_F407VG/ELM.bin 0x8000000 verify reset exit"
+	openocd -f "../stm32f4discovery.cfg" -c "program DISCO_F407VG/$(PROJECT).bin 0x8000000 verify reset exit"
 
