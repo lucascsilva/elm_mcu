@@ -9,7 +9,7 @@
 #include <array>
 #include "gsl/gsl_blas.h"
 #include "gsl/gsl_linalg.h"
-#include "elm.hpp"
+#include "slfn.hpp"
 
 typedef enum _Mode
 {
@@ -27,9 +27,9 @@ typedef struct _OutputData
 class Organizer
 {
     private:
-    std::array<float, NUM_INPUT_NEURONS> sample;
-    std::array<float, NUM_OUTPUT_NEURONS> target;
-    std::array<float, NUM_TEST> result;
+    float* sample;
+    float* target;
+    float* result;
     gsl_matrix* training_set;
     gsl_matrix* targets;
     gsl_matrix* test_sample;
@@ -41,12 +41,12 @@ class Organizer
 
     
     public:
-    Organizer();
+    Organizer(const Slfn* network);
     ~Organizer();
-    void buildSample(float value, Mode mode);
-    void buildTarget(float value);
-    void storeSample(Mode mode);
-    void setTarget(void);
+    void buildSample(float value, Mode mode, const Slfn* network);
+    void buildTarget(float value, const Slfn* network);
+    void storeSample(Mode mode, const Slfn* network);
+    void setTarget(const Slfn* network);
     uint16_t getSampleCount(void);
     uint16_t getTargetCount(void);
     uint16_t getSamplesCount(void);
