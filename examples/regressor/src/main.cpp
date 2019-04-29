@@ -10,8 +10,8 @@ int main(void)
     Serial uart(USBTX,USBRX,9600);
     const Slfn network{
         1,  //input nodes count
-        1,  //hidden layers count
-        10, //hidden neurons count
+        10,  //hidden neurons count
+        1, //hidden layers count
         1,  //output neurons count
         40, //training set count
         20, //test set count
@@ -54,7 +54,7 @@ int main(void)
     DigitalOut led(LED4);
     output_data.output = gsl_matrix_alloc(1, network.output_neurons_count);
     set.resetSamplesCount();
-    int test_counter=0;
+    uint32_t test_counter=0;
     while( test_counter < network.test_set_count)
     {
         DataConverter float_converter;

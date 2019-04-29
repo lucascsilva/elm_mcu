@@ -12,8 +12,8 @@ result_count(0)
     target = new float[network->output_neurons_count];
     result = new float[network->output_neurons_count];
     training_set = gsl_matrix_alloc(network->input_nodes_count, network->training_set_count);
-    targets = gsl_matrix_calloc(network->training_set_count, network->output_neurons_count);
-    test_sample = gsl_matrix_calloc(network->input_nodes_count, 1);
+    targets = gsl_matrix_alloc(network->training_set_count, network->output_neurons_count);
+    test_sample = gsl_matrix_alloc(network->input_nodes_count, 1);
 }
 
 Organizer::~Organizer()
