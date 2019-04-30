@@ -1,10 +1,11 @@
 #include "elm.hpp"
+#include "slfn.hpp"
 
-Elm::Elm()
+Elm::Elm(const Slfn* network)
 {
-    random_weights = gsl_matrix_alloc(NUM_HIDDEN_NEURONS,NUM_INPUT_NEURONS);
-    random_bias = gsl_matrix_alloc(NUM_HIDDEN_LAYERS, NUM_HIDDEN_NEURONS);
-    output_weights = gsl_matrix_alloc(NUM_HIDDEN_NEURONS, NUM_OUTPUT_NEURONS);
+    random_weights = gsl_matrix_alloc(network->hidden_neurons_count,network->input_nodes_count);
+    random_bias = gsl_matrix_alloc(network->hidden_layers_count, network->hidden_neurons_count);
+    output_weights = gsl_matrix_alloc(network->hidden_neurons_count, network->output_neurons_count);
     SetRandomWeights();
     SetRandomBias();
 }
@@ -54,9 +55,9 @@ void Elm::SetRandomWeights(void)
 
     size_t weight_counter=0;
 
-    for(size_t row_counter=0; row_counter<random_weights->size1; row_counter++)
+    for(size_t row_counter=0; row_counter < random_weights->size1; row_counter++)
     {
-        for(size_t col_counter=0; col_counter<random_weights->size2; col_counter++)
+        for(size_t col_counter=0; col_counter < random_weights->size2; col_counter++)
         {
             gsl_matrix_set(random_weights, row_counter, col_counter, random_weights_values[weight_counter++]);
         }   
@@ -81,23 +82,23 @@ void Elm::SetRandomBias(void)
 
     size_t bias_counter=0;
 
-    for(size_t col_counter=0; col_counter<random_bias->size2; col_counter++)
+    for(size_t col_counter=0; col_counter < random_bias->size2; col_counter++)
     {
         gsl_matrix_set(random_bias, 0, col_counter, random_bias_values[bias_counter++]);
     }   
 }
 
-void Elm::NetworkOutput(const gsl_matrix* input, gsl_matrix* output)
+void Elm::NetworkOutput(const gsl_matrix* input, gsl_matrix* output, const Slfn* network)
 {
     double arg;
     
     gsl_matrix* hidden_layer_output;
-    hidden_layer_output = gsl_matrix_alloc(NUM_HIDDEN_LAYERS, NUM_HIDDEN_NEURONS);
+    hidden_layer_output = gsl_matrix_alloc(network->hidden_layers_count, network->hidden_neurons_count);
     
     gsl_blas_dgemm(CblasTrans,CblasTrans,1,input,random_weights,0,hidden_layer_output);
     gsl_matrix_add(hidden_layer_output, random_bias);
 
-    for (size_t col_counter=0; col_counter<hidden_layer_output->size2; col_counter++)
+    for (size_t col_counter=0; col_counter < hidden_layer_output->size2; col_counter++)
     {
         arg=gsl_matrix_get(hidden_layer_output,0,col_counter);
         gsl_matrix_set(hidden_layer_output,0,col_counter,ActivationFunction(arg));
@@ -107,19 +108,17 @@ void Elm::NetworkOutput(const gsl_matrix* input, gsl_matrix* output)
     gsl_blas_dgemm(CblasNoTrans,CblasNoTrans,1,hidden_layer_output,output_weights,0,output);
     
     gsl_matrix_free(hidden_layer_output);
-
 }
 
-void Elm::HiddenLayerOutput(const gsl_matrix* samples, gsl_matrix* hidden_layer_outputs)
+void Elm::HiddenLayerOutput(const gsl_matrix* samples, gsl_matrix* hidden_layer_outputs, const Slfn* network)
 {
-    
     float arg,sum_arg=0;
 
-    for(size_t row_counter=0; row_counter<hidden_layer_outputs->size1; row_counter++)
+    for(size_t row_counter=0; row_counter < hidden_layer_outputs->size1; row_counter++)
     {
-        for(size_t col_counter=0; col_counter<hidden_layer_outputs->size2; col_counter++)
+        for(size_t col_counter=0; col_counter < hidden_layer_outputs->size2; col_counter++)
         {
-            for(size_t i_n_counter=0; i_n_counter<NUM_INPUT_NEURONS;i_n_counter++)
+            for(size_t i_n_counter=0; i_n_counter < network->input_nodes_count; i_n_counter++)
             {
                 arg=(gsl_matrix_get(samples,i_n_counter,row_counter)*gsl_matrix_get(random_weights,col_counter,i_n_counter));
                 sum_arg+=arg;
@@ -129,7 +128,6 @@ void Elm::HiddenLayerOutput(const gsl_matrix* samples, gsl_matrix* hidden_layer_
             sum_arg=0;
         }   
     }
-
 }
 
 double Elm::ActivationFunction(double arg)
@@ -137,15 +135,15 @@ double Elm::ActivationFunction(double arg)
     return 1/(1+exp(-arg));
 }
 
-void Elm::TrainElm(const gsl_matrix* batch_input, const gsl_matrix* target)
+void Elm::TrainElm(const gsl_matrix* batch_input, const gsl_matrix* target, const Slfn* network)
 {
     gsl_matrix *hidden_layer_outputs;
     gsl_matrix *h_pseudo_inverse;
 
-    hidden_layer_outputs = gsl_matrix_alloc(NUM_SAMPLES, NUM_HIDDEN_NEURONS);
-    h_pseudo_inverse = gsl_matrix_alloc(NUM_HIDDEN_NEURONS, NUM_SAMPLES);
+    hidden_layer_outputs = gsl_matrix_alloc(network->training_set_count, network->hidden_neurons_count);
+    h_pseudo_inverse = gsl_matrix_alloc(network->hidden_neurons_count, network->training_set_count);
 
-    HiddenLayerOutput(batch_input, hidden_layer_outputs);
+    HiddenLayerOutput(batch_input, hidden_layer_outputs, network);
 
     h_pseudo_inverse = MoorePenrosePinv(hidden_layer_outputs, 1e-6);
     //output weights calculation
@@ -238,6 +236,7 @@ gsl_matrix* Elm::MoorePenrosePinv(gsl_matrix *A, const double rcond)
 
 	return A_pinv;
 }
+
 
 
 

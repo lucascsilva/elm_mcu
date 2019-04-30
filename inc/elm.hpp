@@ -8,36 +8,12 @@
 
 #include "gsl/gsl_blas.h"
 #include "gsl/gsl_linalg.h"
+#include "slfn.hpp"
 
 /**
  * @addtogroup elm ELM API
  * @{
  */
-
-/**
- * @brief Number of input neurons. Usually represents the dimension of 
- * the data on which the Neural network will produce outputs.
- */
-#define NUM_INPUT_NEURONS   1
-/**
- * @brief Neuron count of the hidden layer
- */
-#define NUM_HIDDEN_NEURONS  10
-/**
- * @brief Hidden Layer count. Must be set to 1 for the current implementation.
- */
-#define NUM_HIDDEN_LAYERS   1
-/**
- * @brief Neuron count of the output layer.
- */
-#define NUM_OUTPUT_NEURONS  1
-/**
- * @brief Size of the training set.
- */
-#define NUM_SAMPLES         40
-
-#define NUM_TEST            20
-
 
 class Elm 
 {
@@ -61,8 +37,10 @@ class Elm
      * 
      * Allocates memory blocks for the weights and bias. Also, sets the values for
      * random weights and random bias
+     * 
+     * @param network 
      */
-    Elm();
+    Elm(const Slfn* network);
     /**
     * @brief Default destructor
     * 
@@ -87,14 +65,15 @@ class Elm
      * @param target Pointer to a GSL Matrix containing the wanted outputs respective to the training set.
      * 
      */
-    void TrainElm(const gsl_matrix* batch_input, const gsl_matrix* target);
+    void TrainElm(const gsl_matrix* batch_input, const gsl_matrix* target, const Slfn* network);
     /**
      * @brief Calculates the output of the network for a given sample.
      * 
      * @param input Pointer to the GSL Matrix containing the sample.
-     * @param target Pointer to a GSL Matrix which will store the output values.
+     * @param output Pointer to a GSL Matrix which will store the output values.
+     * @param network
      **/
-    void NetworkOutput(const gsl_matrix* input, gsl_matrix* output);
+    void NetworkOutput(const gsl_matrix* input, gsl_matrix* output, const Slfn* network);
     /**
      * @brief Fills the connections to input layer to hidden layer with pre-calculated random values.
      **/
@@ -111,8 +90,9 @@ class Elm
      * @param samples Pointer to the GSL Matrix containing the training set.
      * @param target Pointer to a GSL Matrix which will store the values of the hidden layer output 
      * respective to the provided samples.
+     * @param network
      **/
-    void HiddenLayerOutput(const gsl_matrix* samples, gsl_matrix* hidden_layer_outputs);
+    void HiddenLayerOutput(const gsl_matrix* samples, gsl_matrix* hidden_layer_outputs, const Slfn* network);
     /**
      * @brief 
      * 
@@ -124,10 +104,10 @@ class Elm
     /**
      * @}
      */
-    
 
 };
 
-
-
 #endif
+
+
+
