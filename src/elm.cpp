@@ -108,6 +108,15 @@ void Elm::NetworkOutput(const gsl_matrix* input, gsl_matrix* output, const Slfn*
     gsl_blas_dgemm(CblasNoTrans,CblasNoTrans,1,hidden_layer_output,output_weights,0,output);
     
     gsl_matrix_free(hidden_layer_output);
+
+    if(network->output_neuron_type == SIGMOID)
+    {
+        for(size_t neuron_counter=0; neuron_counter < network->output_neurons_count; neuron_counter++)
+        {
+            arg=gsl_matrix_get(output,0,neuron_counter);
+            gsl_matrix_set(output,0,neuron_counter,ActivationFunction(arg));
+        }
+    }
 }
 
 void Elm::HiddenLayerOutput(const gsl_matrix* samples, gsl_matrix* hidden_layer_outputs, const Slfn* network)
@@ -132,7 +141,7 @@ void Elm::HiddenLayerOutput(const gsl_matrix* samples, gsl_matrix* hidden_layer_
 
 double Elm::ActivationFunction(double arg)
 {
-    return 1/(1+exp(-arg));
+    return (2/(1+exp(-arg))) -1;
 }
 
 void Elm::TrainElm(const gsl_matrix* batch_input, const gsl_matrix* target, const Slfn* network)

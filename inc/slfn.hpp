@@ -6,6 +6,12 @@
 #ifndef __SLFN_HPP__
 #define __SLFN_HPP__
 
+typedef enum _NeuronType
+{
+    ADDITIVE=0,
+    SIGMOID
+}NeuronType;
+
 typedef struct _Slfn{
     /**
     * @brief Number of input nodes. Usually represents the dimension of 
@@ -30,6 +36,8 @@ typedef struct _Slfn{
     uint32_t training_set_count;
 
     uint32_t test_set_count;
-} Slfn;
+
+    NeuronType output_neuron_type;
+}Slfn;
 
 #endif

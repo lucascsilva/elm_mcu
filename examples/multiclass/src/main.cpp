@@ -9,12 +9,13 @@ int main(void)
 {   
     Serial uart(USBTX,USBRX,9600);
     const Slfn parameters{
-        1,  //input nodes count
-        10,  //hidden neurons count
-        1, //hidden layers count
-        2,  //output neurons count
-        40, //training set count
-        20, //test set count
+        1,      //input nodes count
+        10,     //hidden neurons count
+        1,      //hidden layers count
+        2,      //output neurons count
+        40,     //training set count
+        20,     //test set count
+        SIGMOID // output neuron type
     };
     Organizer set(&parameters);
 
