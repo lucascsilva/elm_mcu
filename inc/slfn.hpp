@@ -39,6 +39,6 @@ struct Slfn {
   uint32_t test_set_count;
 
   NeuronType output_neuron_type;
-}Slfn;
+};
 
 #endif  // INC_SLFN_HPP_

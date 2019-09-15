@@ -29,4 +29,4 @@ class DataConverter {
   ConversionStatus getConversionStatus(void);
 };
 
-#endif __DATA_CONVERTER_HPP__
+#endif //__DATA_CONVERTER_HPP__

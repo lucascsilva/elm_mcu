@@ -11,7 +11,7 @@
 
 int main(void) {
   Serial uart(USBTX, USBRX, 9600);
-  const Slfn parameters;
+  Slfn parameters;
   parameters.input_nodes_count = 2;
   parameters.hidden_neurons_count = 10;
   parameters.hidden_layers_count = 1;
