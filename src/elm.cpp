@@ -1,190 +1,114 @@
+/*
+* Copyright 2019 Lucas Silva
+*/
+
 #include "elm.hpp"
 #include "slfn.hpp"
 
-Elm::Elm(const Slfn* network)
-{
-    random_weights = gsl_matrix_alloc(network->hidden_neurons_count,network->input_nodes_count);
-    random_bias = gsl_matrix_alloc(network->hidden_layers_count, network->hidden_neurons_count);
-    output_weights = gsl_matrix_alloc(network->hidden_neurons_count, network->output_neurons_count);
-    SetRandomWeights();
-    SetRandomBias();
+Elm::Elm(const Slfn* network) {
+  random_weights = gsl_matrix_alloc(network->input_nodes_count, network->hidden_neurons_count);
+  random_bias = gsl_matrix_alloc(network->hidden_layers_count, network->hidden_neurons_count);
+  output_weights = gsl_matrix_alloc(network->hidden_neurons_count, network->output_neurons_count);
+  SetRandomWeights();
+  SetRandomBias();
 }
 
-Elm::~Elm()
-{
-    gsl_matrix_free(random_weights);
-    gsl_matrix_free(random_bias);
-    gsl_matrix_free(output_weights);
+Elm::~Elm() {
+  gsl_matrix_free(random_weights);
+  gsl_matrix_free(random_bias);
+  gsl_matrix_free(output_weights);
 }
 
-void Elm::SetRandomWeights(void)
-{
-    static double random_weights_values[]=
-    {
-        0.629447372786358,
-        0.811583874151238,
-        -0.746026367412988,
-        0.826751712278039,
-        0.264718492450819,
-        -0.804919190001181,
-        -0.443003562265903,
-        0.0937630384099677,
-        0.915013670868595,
-        0.929777070398553,
-        -0.684773836644903,
-        0.941185563521231,
-        0.914333896485891,
-        -0.0292487025543176,
-        0.600560937777600,
-        -0.716227322745569,
-        -0.156477434747450,
-        0.831471050378134,
-        0.584414659119109,
-        0.918984852785806,
-        0.311481398313174,
-        -0.928576642851621,
-        0.698258611737554,
-        0.867986495515101,
-        0.357470309715547,
-        0.515480261156667,
-        0.486264936249832,
-        -0.215545960931664,
-        0.310955780355113,
-        -0.657626624376877
-    };
+void Elm::SetRandomWeights(void) {
+  size_t weight_counter = 0;
 
-    size_t weight_counter=0;
-
-    for(size_t row_counter=0; row_counter < random_weights->size1; row_counter++)
-    {
-        for(size_t col_counter=0; col_counter < random_weights->size2; col_counter++)
-        {
-            gsl_matrix_set(random_weights, row_counter, col_counter, random_weights_values[weight_counter++]);
-        }   
+  for (size_t col_counter = 0; col_counter < random_weights->size2; col_counter++) {
+    for (size_t row_counter = 0; row_counter < random_weights->size1; row_counter++) {
+      gsl_matrix_set(random_weights, row_counter, col_counter, random_weights_values[weight_counter++]);
     }
+  }
 }
 
-void Elm::SetRandomBias(void)
-{
-    static double random_bias_values[]=
-    {
-        -0.630367359751728,
-        0.809761937359786,
-        0.959496756712170,
-        -0.122260053747794,
-        -0.777761553118803,
-        -0.483870608175866,
-        -0.182560307774896,
-        0.189792148017229,
-        -0.475576504438309,
-        0.205686178764166,
-        0.422431560867366,
-        -0.556506531965520,
-        -0.765164698288388,
-        -0.406648253563346,
-        -0.362443396148235,
-        -0.151666480572386,
-        0.0157165693222363,
-        -0.828968405819912,
-        -0.475035530603335,
-        0.602029245539478,
-        -0.941559444875707,
-        0.857708278956089,
-        0.460661725710906,
-        -0.0227820523928417,
-        0.157050122046878,
-        -0.525432840456957,
-        -0.0823023436401378,
-        0.926177078573826,
-        0.0936114374779360,
-        0.0422716616080030
-    };
+void Elm::SetRandomBias(void) {
+  size_t bias_counter = 0;
 
-    size_t bias_counter=0;
-
-    for(size_t col_counter=0; col_counter < random_bias->size2; col_counter++)
-    {
-        gsl_matrix_set(random_bias, 0, col_counter, random_bias_values[bias_counter++]);
-    }   
+  for (size_t col_counter = 0; col_counter < random_bias->size2; col_counter++) {
+    gsl_matrix_set(random_bias, 0, col_counter, random_bias_values[bias_counter++]);
+  }
 }
 
 void Elm::NetworkOutput(const gsl_matrix* input, gsl_matrix* output, const Slfn* network)
 {
-    double arg;
-    
-    gsl_matrix* hidden_layer_output;
-    hidden_layer_output = gsl_matrix_alloc(network->hidden_layers_count, network->hidden_neurons_count);
-    
-    gsl_blas_dgemm(CblasTrans,CblasTrans,1,input,random_weights,0,hidden_layer_output);
-    gsl_matrix_add(hidden_layer_output, random_bias);
+  double arg;
+  double sum_arg = 0;
 
-    for (size_t col_counter=0; col_counter < hidden_layer_output->size2; col_counter++)
-    {
-        arg=gsl_matrix_get(hidden_layer_output,0,col_counter);
-        gsl_matrix_set(hidden_layer_output,0,col_counter,ActivationFunction(arg));
+  gsl_matrix* hidden_layer_output;
+  hidden_layer_output = gsl_matrix_alloc(network->hidden_layers_count, network->hidden_neurons_count);
+
+  for (size_t col_counter = 0; col_counter < hidden_layer_output->size2; col_counter++) {
+    for (size_t i_n_counter = 0; i_n_counter < network->input_nodes_count; i_n_counter++) {
+      arg = (gsl_matrix_get(input, i_n_counter, 0)*gsl_matrix_get(random_weights, i_n_counter, col_counter));
+      sum_arg+=arg;
     }
+    sum_arg+= gsl_matrix_get(random_bias, 0, col_counter);  // bias
+    gsl_matrix_set(hidden_layer_output, 0, col_counter, ActivationFunction(sum_arg));
+    gsl_matrix_set(hidden_layer_output, 0, col_counter, sum_arg);
+    sum_arg = 0;
+  }
 
-    //output calculation
-    gsl_blas_dgemm(CblasNoTrans,CblasNoTrans,1,hidden_layer_output,output_weights,0,output);
-    
-    gsl_matrix_free(hidden_layer_output);
+  for (size_t col_counter = 0; col_counter < hidden_layer_output->size2; col_counter++) {
+      arg = gsl_matrix_get(hidden_layer_output, 0, col_counter);
+      gsl_matrix_set(hidden_layer_output, 0, col_counter, ActivationFunction(arg));
+  }
 
-    if(network->output_neuron_type == SIGMOID)
-    {
-        for(size_t neuron_counter=0; neuron_counter < network->output_neurons_count; neuron_counter++)
-        {
-            arg=gsl_matrix_get(output,0,neuron_counter);
-            gsl_matrix_set(output,0,neuron_counter,ActivationFunction(arg));
-        }
-    }
+  // output calculation
+  gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1, hidden_layer_output, output_weights, 0, output);
+
+  gsl_matrix_free(hidden_layer_output);
 }
 
-void Elm::HiddenLayerOutput(const gsl_matrix* samples, gsl_matrix* hidden_layer_outputs, const Slfn* network)
-{
-    float arg,sum_arg=0;
+void Elm::HiddenLayerOutput(const gsl_matrix* samples, gsl_matrix* hidden_layer_outputs, const Slfn* network) {
+  float arg, sum_arg = 0;
 
-    for(size_t row_counter=0; row_counter < hidden_layer_outputs->size1; row_counter++)
-    {
-        for(size_t col_counter=0; col_counter < hidden_layer_outputs->size2; col_counter++)
-        {
-            for(size_t i_n_counter=0; i_n_counter < network->input_nodes_count; i_n_counter++)
-            {
-                arg=(gsl_matrix_get(samples,i_n_counter,row_counter)*gsl_matrix_get(random_weights,col_counter,i_n_counter));
-                sum_arg+=arg;
-            }
-            sum_arg+=gsl_matrix_get(random_bias,0,col_counter); //bias
-            gsl_matrix_set(hidden_layer_outputs,row_counter, col_counter, ActivationFunction(sum_arg));
-            sum_arg=0;
-        }   
+  for (size_t row_counter = 0; row_counter < hidden_layer_outputs->size1; row_counter++) {
+    for (size_t col_counter = 0; col_counter < hidden_layer_outputs->size2; col_counter++) {
+      for (size_t i_n_counter = 0; i_n_counter < network->input_nodes_count; i_n_counter++) {
+        arg = (gsl_matrix_get(samples, i_n_counter, row_counter)*gsl_matrix_get(random_weights, i_n_counter,
+                                                                                col_counter));
+        sum_arg+=arg;
+      }
+      sum_arg+=gsl_matrix_get(random_bias, 0, col_counter);  // bias
+      gsl_matrix_set(hidden_layer_outputs, row_counter, col_counter, ActivationFunction(sum_arg));
+      gsl_matrix_set(hidden_layer_outputs, row_counter, col_counter, sum_arg);
+      sum_arg = 0;
     }
+  }
 }
 
 double Elm::ActivationFunction(double arg)
 {
-    return (2/(1+exp(-arg))) -1;
+    return 1/(1+exp(-arg));
 }
 
-void Elm::TrainElm(const gsl_matrix* batch_input, const gsl_matrix* target, const Slfn* network)
-{
-    gsl_matrix *hidden_layer_outputs;
-    gsl_matrix *h_pseudo_inverse;
+void Elm::TrainElm(const gsl_matrix* batch_input, const gsl_matrix* target, const Slfn* network) {
+  gsl_matrix *hidden_layer_outputs;
+  gsl_matrix *h_pseudo_inverse;
 
-    hidden_layer_outputs = gsl_matrix_alloc(network->training_set_count, network->hidden_neurons_count);
-    h_pseudo_inverse = gsl_matrix_alloc(network->hidden_neurons_count, network->training_set_count);
+  hidden_layer_outputs = gsl_matrix_alloc(network->training_set_count, network->hidden_neurons_count);
+  h_pseudo_inverse = gsl_matrix_alloc(network->hidden_neurons_count, network->training_set_count);
 
-    HiddenLayerOutput(batch_input, hidden_layer_outputs, network);
+  HiddenLayerOutput(batch_input, hidden_layer_outputs, network);
 
-    h_pseudo_inverse = MoorePenrosePinv(hidden_layer_outputs, 1e-6);
-    //output weights calculation
-    gsl_blas_dgemm(CblasNoTrans,CblasNoTrans,1,h_pseudo_inverse,target,0,output_weights);
+  h_pseudo_inverse = MoorePenrosePinv(hidden_layer_outputs, 1e-6);
+  // output weights calculation
+  gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1, h_pseudo_inverse, target, 0, output_weights);
 
-    gsl_matrix_free(hidden_layer_outputs);
-    gsl_matrix_free(h_pseudo_inverse);
+  gsl_matrix_free(hidden_layer_outputs);
+  gsl_matrix_free(h_pseudo_inverse);
 }
 
 
-gsl_matrix* Elm::MoorePenrosePinv(gsl_matrix *A, const double rcond) 
-{
+gsl_matrix* Elm::MoorePenrosePinv(gsl_matrix *A, const double rcond) {
 
 	gsl_matrix *V, *Sigma_pinv, *U, *A_pinv;
 	gsl_matrix *_tmp_mat = NULL;
