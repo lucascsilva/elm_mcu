@@ -166,14 +166,6 @@ class Elm  {
    **/
   void HiddenLayerOutput(const gsl_matrix_float* samples, gsl_matrix_float* hidden_layer_outputs, const Slfn* network);
   /**
-   * @brief 
-   * 
-   * @param 
-   * @param  
-   * @return
-   **/
-  gsl_matrix* MoorePenrosePinv(gsl_matrix *A, const double rcond);
-  /**
    * @brief Inverts a matrix in place
    * 
    * This method uses LU decomposition to invert a matrix. Since this feature is only
@@ -220,14 +212,9 @@ class Elm  {
    * @param network
    **/
   void NetworkOutput(const gsl_matrix_float* input, gsl_matrix_float* output, const Slfn* network);
-
-  
   /**
    * @}
    */
 };
 
 #endif  // INC_ELM_HPP_
-
-
-
