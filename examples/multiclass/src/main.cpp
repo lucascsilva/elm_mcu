@@ -3,10 +3,10 @@
 *  Lucas Silva
 */
 #include "mbed.h"
-#include "elm.hpp"
-#include "data_converter.hpp"
-#include "organizer.hpp"
-#include "slfn.hpp"
+#include "elm/elm.hpp"
+#include "elm/organizer.hpp"
+#include "elm/slfn.hpp"
+#include "utils/data_converter.hpp"
 
 
 int main(void) {
