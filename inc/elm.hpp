@@ -18,7 +18,7 @@
  * @{
  */
 
-static const double random_weights_values[] = {  // 50
+const float random_weights_values[] = {  // 50
   0.629447372786358,
   0.811583874151238,
   -0.746026367412988,
@@ -72,7 +72,7 @@ static const double random_weights_values[] = {  // 50
 };
 
 
-static const double random_bias_values[] = {  // 50
+const float random_bias_values[] = {  // 50
   -0.630367359751728,
   0.809761937359786,
   0.959496756712170,
@@ -130,28 +130,28 @@ class Elm  {
   /**
    * @brief Weight connections from input layer to hidden layer
    */ 
-  gsl_matrix* random_weights;
+  gsl_matrix_float* random_weights;
   /**
    * @brief Bias to the hidden layer neurons
    * */
-  gsl_matrix* random_bias;
+  gsl_matrix_float* random_bias;
   /**
    * @brief Weight of connections from hidden layer to output layer
    */ 
-  gsl_matrix* output_weights;
+  gsl_matrix_float* output_weights;
     /**
    * @brief Calculates the activation function of a neuron, in the form y = 1/(1+exp(-x)).
    * 
    * @param arg The dot product between weights and inputs to the neuron (bias included).
    * @return The value of activation function.
    */
-  double ActivationFunction(double arg);
+  float ActivationFunction(float arg);
     /**
-   * @brief Fills the connections to input layer to hidden layer with pre-calculated random values.
+   * @brief Fills the connections to input layer to hidden layer with pre-stored random values.
    **/
   void SetRandomWeights(void);
   /**
-  * @brief Fills the bias of each neuron in hidden layer with pre-calculated random values.
+  * @brief Fills the bias of each neuron in hidden layer with pre-stored random values.
   **/
   void SetRandomBias(void);
   /**
@@ -164,7 +164,7 @@ class Elm  {
    * respective to the provided samples.
    * @param network
    **/
-  void HiddenLayerOutput(const gsl_matrix* samples, gsl_matrix* hidden_layer_outputs, const Slfn* network);
+  void HiddenLayerOutput(const gsl_matrix_float* samples, gsl_matrix_float* hidden_layer_outputs, const Slfn* network);
   /**
    * @brief 
    * 
@@ -173,6 +173,16 @@ class Elm  {
    * @return
    **/
   gsl_matrix* MoorePenrosePinv(gsl_matrix *A, const double rcond);
+  /**
+   * @brief Inverts a matrix in place
+   * 
+   * This method uses LU decomposition to invert a matrix. Since this feature is only
+   * available in double format in GSL, the matrix is copied into a double format
+   * gsl_matrix, processed and the result is transformed back to float format.
+   * 
+   * @param [in|out] m The matrix to be inverted.
+   */ 
+  void invertMatrix(gsl_matrix_float* m);
 
  public:
   /**
@@ -201,7 +211,7 @@ class Elm  {
    * @param target Pointer to a GSL Matrix containing the wanted outputs respective to the training set.
    * 
    */
-  void TrainElm(const gsl_matrix* batch_input, const gsl_matrix* target, const Slfn* network);
+  void TrainElm(const gsl_matrix_float* batch_input, gsl_matrix_float* target, const Slfn* network);
   /**
    * @brief Calculates the output of the network for a given sample.
    * 
@@ -209,7 +219,9 @@ class Elm  {
    * @param output Pointer to a GSL Matrix which will store the output values.
    * @param network
    **/
-  void NetworkOutput(const gsl_matrix* input, gsl_matrix* output, const Slfn* network);
+  void NetworkOutput(const gsl_matrix_float* input, gsl_matrix_float* output, const Slfn* network);
+
+  
   /**
    * @}
    */

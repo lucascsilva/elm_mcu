@@ -17,7 +17,7 @@ enum Mode {
 };
 
 struct OutputData {
-  gsl_matrix *output;
+  gsl_matrix_float *output;
   size_t row_max;
   size_t col_max;
 };
@@ -27,9 +27,9 @@ class Organizer {
   float* sample;
   float* target;
   float* result;
-  gsl_matrix* training_set;
-  gsl_matrix* targets;
-  gsl_matrix* test_sample;
+  gsl_matrix_float* training_set;
+  gsl_matrix_float* targets;
+  gsl_matrix_float* test_sample;
   uint16_t sample_count;
   uint16_t target_count;
   uint16_t samples_count;
@@ -47,9 +47,9 @@ class Organizer {
   uint16_t getTargetCount(void);
   uint16_t getSamplesCount(void);
   uint16_t getTargetsCount(void);
-  gsl_matrix* getSamples(void);
-  gsl_matrix* getTargets(void);
-  gsl_matrix* getTestSample(void);
+  gsl_matrix_float* getSamples(void);
+  gsl_matrix_float* getTargets(void);
+  gsl_matrix_float* getTestSample(void);
   void resetSamplesCount(void);
   void resetResultCount(void);
   void setResult(float value);
