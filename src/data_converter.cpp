@@ -3,7 +3,8 @@
 * Lucas Silva
 */
 
-#include "data_converter.hpp"
+#include "../inc/utils/data_converter.hpp"
+#include <cstring>
 
 DataConverter::DataConverter()
     :float_byte_counter(0),

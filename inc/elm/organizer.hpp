@@ -1,15 +1,17 @@
-/**
+/*
  * Copyright 2019
- * @file organizer.hpp
- * @author Lucas Silva
+ * Lucas Silva
+ */
+/**
+ *  @file organizer.hpp
  */
 
-#ifndef INC_ORGANIZER_HPP_
-#define INC_ORGANIZER_HPP_
+#ifndef INC_ELM_ORGANIZER_HPP_
+#define INC_ELM_ORGANIZER_HPP_
 
-#include "gsl/gsl_blas.h"
-#include "gsl/gsl_linalg.h"
-#include "slfn.hpp"
+#include "../inc/gsl/gsl_blas.h"
+#include "../inc/gsl/gsl_linalg.h"
+#include "../inc/elm/slfn.hpp"
 
 enum Mode {
   TRAIN = 0,
@@ -37,7 +39,7 @@ class Organizer {
   uint16_t result_count;
 
  public:
-  Organizer(const Slfn* network);
+  explicit Organizer(const Slfn* network);
   ~Organizer();
   void buildSample(float value, Mode mode, const Slfn* network);
   void buildTarget(float value, const Slfn* network);
@@ -56,4 +58,4 @@ class Organizer {
   float getResult(int index);
 };
 
-#endif  // INC_ORGANIZER_HPP_
+#endif  // INC_ELM_ORGANIZER_HPP_

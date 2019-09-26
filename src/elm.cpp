@@ -2,8 +2,7 @@
 * Copyright 2019 Lucas Silva
 */
 
-#include "elm.hpp"
-#include "slfn.hpp"
+#include "../inc/elm/elm.hpp"
 
 using std::size_t;
 
@@ -49,7 +48,7 @@ void Elm::NetworkOutput(const gsl_matrix_float* input, gsl_matrix_float* output,
   for (size_t col_counter = 0; col_counter < hidden_layer_output->size2; col_counter++) {
     for (size_t i_n_counter = 0; i_n_counter < network->input_nodes_count; i_n_counter++) {
       arg = (gsl_matrix_float_get(input, i_n_counter, 0)*gsl_matrix_float_get(random_weights, i_n_counter,
-                                                                              col_counter));
+                                                                                            col_counter));
       sum_arg+=arg;
     }
     sum_arg+= gsl_matrix_float_get(random_bias, 0, col_counter);  // bias
