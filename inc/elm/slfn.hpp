@@ -7,6 +7,10 @@
 #define INC_SLFN_HPP_
 
 #include <cstddef>
+#include <cstdint>
+#include <cstdio>
+
+using std::size_t;
 
 enum NeuronType {
   ADDITIVE = 0,
@@ -35,7 +39,9 @@ struct Slfn {
   * @brief Size of the training set.
   */
   uint32_t training_set_count;
-
+  /**
+   * @brief Size of test set
+   */
   uint32_t test_set_count;
 
   NeuronType output_neuron_type;
