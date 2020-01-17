@@ -2,8 +2,8 @@
 * Copyright 2019
 * Lucas Silva
 */
-#ifndef __DATA_CONVERTER_HPP__
-#define __DATA_CONVERTER_HPP__
+#ifndef INC_UTILS_DATA_CONVERTER_HPP_
+#define INC_UTILS_DATA_CONVERTER_HPP_
 
 #include <array>
 #include <cstring>
@@ -29,4 +29,4 @@ class DataConverter {
   ConversionStatus getConversionStatus(void);
 };
 
-#endif //__DATA_CONVERTER_HPP__
+#endif  // INC_UTILS_DATA_CONVERTER_HPP_

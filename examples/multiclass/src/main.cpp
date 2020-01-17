@@ -3,10 +3,9 @@
 *  Lucas Silva
 */
 #include "mbed.h"
-#include "elm/elm.hpp"
-#include "elm/organizer.hpp"
-#include "elm/slfn.hpp"
-#include "utils/data_converter.hpp"
+#include "../inc/elm/elm.hpp"
+#include "../inc/elm/organizer.hpp"
+#include "../inc/utils/data_converter.hpp"
 
 
 int main(void) {
@@ -69,7 +68,7 @@ int main(void) {
     }
     test_counter++;
   }
-  while (1) {
+  while (true) {
     led = !led;
     wait(0.5);
   }

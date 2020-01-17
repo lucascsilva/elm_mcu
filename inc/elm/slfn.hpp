@@ -3,8 +3,8 @@
  * @author Lucas Silva
  */
 
-#ifndef INC_SLFN_HPP_
-#define INC_SLFN_HPP_
+#ifndef INC_ELM_SLFN_HPP_
+#define INC_ELM_SLFN_HPP_
 
 #include <cstddef>
 #include <cstdint>
@@ -47,4 +47,4 @@ struct Slfn {
   NeuronType output_neuron_type;
 };
 
-#endif  // INC_SLFN_HPP_
+#endif  // INC_ELM_SLFN_HPP_

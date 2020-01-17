@@ -2,8 +2,7 @@
  * Copyright 2019
  * Lucas Silva
  */
-#include "organizer.hpp"
-#include "slfn.hpp"
+#include "../inc/elm/organizer.hpp"
 
 Organizer::Organizer(const Slfn* network)
 :sample_count(0),
