@@ -9,14 +9,14 @@
 
 
 int main(void) {
-  Serial uart(USBTX, USBRX, 9600);
+  Serial uart(USBTX, USBRX, 115200);
   Slfn parameters;
-  parameters.input_nodes_count = 1;
-  parameters.hidden_neurons_count = 10;
+  parameters.input_nodes_count = 24;
+  parameters.hidden_neurons_count = 20;
   parameters.hidden_layers_count = 1;
-  parameters.output_neurons_count = 2;
-  parameters.training_set_count = 40;
-  parameters.test_set_count = 20;
+  parameters.output_neurons_count = 5;
+  parameters.training_set_count = 350;
+  parameters.test_set_count = 150;
   parameters.output_neuron_type = ADDITIVE;
   Organizer set(&parameters);
 

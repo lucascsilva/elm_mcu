@@ -18,6 +18,58 @@
  * @{
  */
 
+const uint32_t POSITIVE_WEIGHT_MASK = 1;
+const uint32_t NEGATIVE_WEIGHT_MASK = 0;
+const uint8_t RANDOM_INTEGERS_LENGTH = 45;
+
+const uint32_t RANDOM_INTEGERS[] = {
+  3499211589,
+  3890346747,
+  545404224,
+  3922919432,
+  2715962282,
+  418932850,
+  1196140743,
+  2348838240,
+  4112460544,
+  4144164703,
+  676943032,
+  4168664256,
+  4111000740,
+  2084672538,
+  3437178442,
+  609397185,
+  1811450916,
+  3933054133,
+  3402504573,
+  4120988593,
+  2816384858,
+  153380492,
+  3646982599,
+  4011470454,
+  2915145293,
+  3254469080,
+  3191729648,
+  1684602222,
+  2815256102,
+  735241226,
+  3032444858,
+  136721035,
+  1189375164,
+  198304613,
+  417177824,
+  3536724443,
+  2984266213,
+  1361931897,
+  4081172624,
+  147944790,
+  1884392677,
+  1638781095,
+  3287869570,
+  3415357570,
+  802611726
+};
+
 const float random_weights_values[] = {  // 50
   0.629447372786358,
   0.811583874151238,
@@ -203,7 +255,7 @@ class Elm  {
    * @param target Pointer to a GSL Matrix containing the wanted outputs respective to the training set.
    * 
    */
-  void TrainElm(const gsl_matrix_float* batch_input, gsl_matrix_float* target, const Slfn* network);
+  void TrainElm(gsl_matrix_float* batch_input, gsl_matrix_float* target, const Slfn* network);
   /**
    * @brief Calculates the output of the network for a given sample.
    * 
