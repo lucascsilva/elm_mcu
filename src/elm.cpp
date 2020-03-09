@@ -9,7 +9,6 @@ using std::size_t;
 Elm::Elm(const Slfn* network) {
   random_weights = gsl_matrix_float_alloc(network->input_nodes_count, network->hidden_neurons_count);
   random_bias = gsl_matrix_float_alloc(network->hidden_layers_count, network->hidden_neurons_count);
-  // output_weights = gsl_matrix_float_alloc(network->hidden_neurons_count, network->output_neurons_count);
   SetRandomWeights();
   SetRandomBias();
 }
@@ -71,7 +70,7 @@ void Elm::NetworkOutput(const gsl_matrix_float* input, gsl_matrix_float* output,
     }
     sum_arg+= gsl_matrix_float_get(random_bias, 0, col_counter);  // bias
     gsl_matrix_float_set(hidden_layer_output, 0, col_counter, ActivationFunction(sum_arg));
-    gsl_matrix_float_set(hidden_layer_output, 0, col_counter, sum_arg);
+    //gsl_matrix_float_set(hidden_layer_output, 0, col_counter, sum_arg);
     sum_arg = 0;
   }
 
@@ -94,7 +93,7 @@ void Elm::HiddenLayerOutput(const gsl_matrix_float* samples, gsl_matrix_float* h
       }
       sum_arg+=gsl_matrix_float_get(random_bias, 0, col_counter);  // bias
       gsl_matrix_float_set(hidden_layer_outputs, row_counter, col_counter, ActivationFunction(sum_arg));
-      gsl_matrix_float_set(hidden_layer_outputs, row_counter, col_counter, sum_arg);
+      //gsl_matrix_float_set(hidden_layer_outputs, row_counter, col_counter, sum_arg);
       sum_arg = 0;
     }
   }
@@ -107,16 +106,12 @@ float Elm::ActivationFunction(float arg) {
 void Elm::TrainElm(gsl_matrix_float* batch_input, gsl_matrix_float* target, const Slfn* network) {
   gsl_matrix_float *hidden_layer_outputs;
 
-  // gsl_matrix_float *h_pseudo_inverse;
   double C = 1024;
 
   hidden_layer_outputs = gsl_matrix_float_alloc(network->training_set_count, network->hidden_neurons_count);
-  // h_pseudo_inverse = gsl_matrix_float_alloc(network->hidden_neurons_count, network->training_set_count);
 
   HiddenLayerOutput(batch_input, hidden_layer_outputs, network);
   gsl_matrix_float_free(batch_input);
-  // gsl_matrix_float_free(target);
-
 
   if (network->training_set_count > 10*network->hidden_neurons_count) {
     gsl_matrix_float* reg = gsl_matrix_float_alloc(network->hidden_neurons_count, network->hidden_neurons_count);
@@ -143,7 +138,7 @@ void Elm::TrainElm(gsl_matrix_float* batch_input, gsl_matrix_float* target, cons
     gsl_matrix_float_free(aux);
     gsl_matrix_float_free(reg);
   }
-  // output weights calculation
+
   gsl_matrix_float_free(hidden_layer_outputs);
 }
 
