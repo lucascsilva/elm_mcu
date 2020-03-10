@@ -26,6 +26,7 @@ struct OutputData {
 
 class Organizer {
  private:
+  Slfn network_config_;
   float* sample;
   float* target;
   float* result;
@@ -39,12 +40,12 @@ class Organizer {
   uint16_t result_count;
 
  public:
-  explicit Organizer(const Slfn* network);
+  explicit Organizer(const Slfn &network);
   ~Organizer();
-  void buildSample(float value, Mode mode, const Slfn* network);
-  void buildTarget(float value, const Slfn* network);
-  void storeSample(Mode mode, const Slfn* network);
-  void setTarget(const Slfn* network);
+  void buildSample(float value, Mode mode);
+  void buildTarget(float value);
+  void storeSample(Mode mode);
+  void setTarget(void);
   uint16_t getSampleCount(void);
   uint16_t getTargetCount(void);
   uint16_t getSamplesCount(void);

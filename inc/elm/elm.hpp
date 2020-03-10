@@ -179,6 +179,7 @@ const float random_bias_values[] = {  // 50
 
 class Elm  {
  private:
+  Slfn network_config_;
   /**
    * @brief Weight connections from input layer to hidden layer
    */ 
@@ -214,9 +215,8 @@ class Elm  {
    * @param samples Pointer to the GSL Matrix containing the training set.
    * @param target Pointer to a GSL Matrix which will store the values of the hidden layer output 
    * respective to the provided samples.
-   * @param network
    **/
-  void HiddenLayerOutput(const gsl_matrix_float* samples, gsl_matrix_float* hidden_layer_outputs, const Slfn* network);
+  void HiddenLayerOutput(const gsl_matrix_float* samples, gsl_matrix_float* hidden_layer_outputs);
   /**
    * @brief Inverts a matrix in place
    * 
@@ -228,6 +228,7 @@ class Elm  {
    */ 
   void invertMatrix(gsl_matrix_float* m);
 
+
  public:
   /**
    * @brief Default Constructor
@@ -237,7 +238,7 @@ class Elm  {
    * 
    * @param network 
    */
-  Elm(const Slfn* network);
+  explicit Elm(const Slfn &network);
   /**
   * @brief Default destructor
   * 
@@ -255,7 +256,7 @@ class Elm  {
    * @param target Pointer to a GSL Matrix containing the wanted outputs respective to the training set.
    * 
    */
-  void TrainElm(gsl_matrix_float* batch_input, gsl_matrix_float* target, const Slfn* network);
+  void TrainElm(gsl_matrix_float* batch_input, gsl_matrix_float* target);
   /**
    * @brief Calculates the output of the network for a given sample.
    * 
@@ -263,7 +264,7 @@ class Elm  {
    * @param output Pointer to a GSL Matrix which will store the output values.
    * @param network
    **/
-  void NetworkOutput(const gsl_matrix_float* input, gsl_matrix_float* output, const Slfn* network);
+  void NetworkOutput(const gsl_matrix_float* input, gsl_matrix_float* output);
   /**
    * @}
    */

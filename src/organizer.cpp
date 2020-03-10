@@ -4,18 +4,19 @@
  */
 #include "../inc/elm/organizer.hpp"
 
-Organizer::Organizer(const Slfn* network)
-:sample_count(0),
+Organizer::Organizer(const Slfn &network_config)
+: network_config_(network_config),
+sample_count(0),
 target_count(0),
 samples_count(0),
 targets_count(0),
 result_count(0) {
-  sample = new float[network->input_nodes_count];
-  target = new float[network->output_neurons_count];
-  result = new float[network->test_set_count*network->output_neurons_count];
-  training_set = gsl_matrix_float_alloc(network->input_nodes_count, network->training_set_count);
-  targets = gsl_matrix_float_alloc(network->training_set_count, network->output_neurons_count);
-  test_sample = gsl_matrix_float_alloc(network->input_nodes_count, 1);
+  sample = new float[network_config_.input_nodes_count];
+  target = new float[network_config_.output_neurons_count];
+  result = new float[network_config_.test_set_count*network_config_.output_neurons_count];
+  training_set = gsl_matrix_float_alloc(network_config_.input_nodes_count, network_config_.training_set_count);
+  targets = gsl_matrix_float_alloc(network_config_.training_set_count, network_config_.output_neurons_count);
+  test_sample = gsl_matrix_float_alloc(network_config_.input_nodes_count, 1);
 }
 
 Organizer::~Organizer() {
@@ -27,24 +28,24 @@ Organizer::~Organizer() {
   delete result;
 }
 
-void Organizer::buildSample(float value, Mode mode, const Slfn* network) {
+void Organizer::buildSample(float value, Mode mode) {
   sample[sample_count++] = value;
-  if (sample_count == network->input_nodes_count) {
-    storeSample(mode, network);
+  if (sample_count == network_config_.input_nodes_count) {
+    storeSample(mode);
     sample_count = 0;
   }
 }
 
-void Organizer::buildTarget(float value, const Slfn* network) {
+void Organizer::buildTarget(float value) {
   target[target_count++] = value;
-  if (target_count == network->output_neurons_count) {
-    setTarget(network);
+  if (target_count == network_config_.output_neurons_count) {
+    setTarget();
     target_count = 0;
   }
 }
 
-void Organizer::storeSample(Mode mode, const Slfn* network) {
-  for (uint16_t row = 0; row < network->input_nodes_count; row++) {
+void Organizer::storeSample(Mode mode) {
+  for (uint16_t row = 0; row < network_config_.input_nodes_count; row++) {
     switch (mode) {
       case TRAIN:
           gsl_matrix_float_set(training_set, row, samples_count, sample[row]);
@@ -57,8 +58,8 @@ void Organizer::storeSample(Mode mode, const Slfn* network) {
   samples_count++;
 }
 
-void Organizer::setTarget(const Slfn* network) {
-  for (uint8_t column = 0; column < network->output_neurons_count; column++) {
+void Organizer::setTarget(void) {
+  for (uint8_t column = 0; column < network_config_.output_neurons_count; column++) {
     gsl_matrix_float_set(targets, targets_count, column, target[column]);
   }
   targets_count++;

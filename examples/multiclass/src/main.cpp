@@ -18,7 +18,7 @@ int main(void) {
   parameters.training_set_count = 700;
   parameters.test_set_count = 300;
   parameters.output_neuron_type = ADDITIVE;
-  Organizer set(&parameters);
+  Organizer set(parameters);
 
   // samples
   {
@@ -27,7 +27,7 @@ int main(void) {
       if (uart.readable()) {
         float_converter.addByte(uart.getc());
         if (float_converter.getConversionStatus() == COMPLETE)
-          set.buildSample(float_converter.getConvertedFloat(), TRAIN, &parameters);
+          set.buildSample(float_converter.getConvertedFloat(), TRAIN);
       }
     }
   }
@@ -38,14 +38,14 @@ int main(void) {
       if (uart.readable()) {
         float_converter.addByte(uart.getc());
         if (float_converter.getConversionStatus() == COMPLETE)
-          set.buildTarget(float_converter.getConvertedFloat(), &parameters);
+          set.buildTarget(float_converter.getConvertedFloat());
       }
     }
   }
 
-  Elm elm_network(&parameters);
+  Elm elm_network(parameters);
   // training
-  elm_network.TrainElm(set.getSamples(), set.getTargets(), &parameters);
+  elm_network.TrainElm(set.getSamples(), set.getTargets());
   // running
   OutputData output_data;
   DigitalOut led(LED4);
@@ -58,11 +58,11 @@ int main(void) {
       if (uart.readable()) {
         float_converter.addByte(uart.getc());
         if (float_converter.getConversionStatus() == COMPLETE)
-          set.buildSample(float_converter.getConvertedFloat(), TEST, &parameters);
+          set.buildSample(float_converter.getConvertedFloat(), TEST);
       }
     }
     set.resetSamplesCount();
-    elm_network.NetworkOutput(set.getTestSample(), output_data.output, &parameters);
+    elm_network.NetworkOutput(set.getTestSample(), output_data.output);
     for (size_t result_counter = 0; result_counter < parameters.output_neurons_count; result_counter++) {
       set.setResult(gsl_matrix_float_get(output_data.output, 0, result_counter));
     }
