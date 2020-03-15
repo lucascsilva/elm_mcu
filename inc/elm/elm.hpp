@@ -204,10 +204,6 @@ class Elm  {
    **/
   void SetRandomWeights(void);
   /**
-  * @brief Fills the bias of each neuron in hidden layer with pre-stored random values.
-  **/
-  void SetRandomBias(void);
-  /**
    * @brief Calculates the output of neurons at the hidden layer.
    * 
    * This method is used during training step.

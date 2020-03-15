@@ -19,7 +19,6 @@ int main(void) {
   parameters.test_set_count = 300;
   parameters.output_neuron_type = ADDITIVE;
   parameters.bits = 2;
-  Elm elm_network(parameters);
   Organizer set(parameters);
 
   // samples
@@ -46,6 +45,7 @@ int main(void) {
   }
 
   // training
+  Elm elm_network(parameters);
   elm_network.TrainElm(set.getSamples(), set.getTargets());
   // running
   OutputData output_data;
