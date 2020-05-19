@@ -11,6 +11,8 @@
 #include <cstdio>
 
 using std::size_t;
+
+namespace elm {
 /**
  * @enum NeuronType slfn.hpp "inc/elm/slfn.hpp"
  * 
@@ -63,5 +65,5 @@ struct Slfn {
    */
   uint8_t bits;
 };
-
+}  // namespace elm
 #endif  // INC_ELM_SLFN_HPP_

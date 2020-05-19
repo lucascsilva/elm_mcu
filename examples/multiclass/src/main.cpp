@@ -7,6 +7,11 @@
 #include "../inc/elm/organizer.hpp"
 #include "../inc/utils/data_converter.hpp"
 
+using elm::Elm;
+using elm::Organizer;
+using elm::Slfn;
+using elm::OutputData;
+using elm::Mode;
 
 int main(void) {
   Serial uart(USBTX, USBRX, 115200);
@@ -27,7 +32,7 @@ int main(void) {
       if (uart.readable()) {
         float_converter.addByte(uart.getc());
         if (float_converter.getConversionStatus() == COMPLETE)
-          set.buildSample(float_converter.getConvertedFloat(), TRAIN);
+          set.buildSample(float_converter.getConvertedFloat(), Mode::TRAIN);
       }
     }
   }
@@ -58,7 +63,7 @@ int main(void) {
       if (uart.readable()) {
         float_converter.addByte(uart.getc());
         if (float_converter.getConversionStatus() == COMPLETE)
-          set.buildSample(float_converter.getConvertedFloat(), TEST);
+          set.buildSample(float_converter.getConvertedFloat(), Mode::TEST);
       }
     }
     set.resetSamplesCount();

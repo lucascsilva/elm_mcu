@@ -4,6 +4,8 @@
 
 #include "../inc/elm/elm.hpp"
 
+namespace elm {
+
 using std::size_t;
 
 Elm::Elm(const Slfn &network_config)
@@ -155,3 +157,4 @@ void Elm::invertMatrix(gsl_matrix_float* m) {
     }
   }
 }
+}  // namespace elm

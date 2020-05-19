@@ -4,6 +4,8 @@
  */
 #include "../inc/elm/organizer.hpp"
 
+namespace elm {
+
 Organizer::Organizer(const Slfn &network_config)
 : network_config_(network_config),
 sample_count(0),
@@ -108,3 +110,4 @@ float Organizer::getResult(int index) {
 void Organizer::resetResultCount(void) {
   result_count = 0;
 }
+}  // namespace elm

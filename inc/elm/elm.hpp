@@ -13,10 +13,7 @@
 #include "gsl/gsl_linalg.h"
 #include "slfn.hpp"
 
-/**
- * @addtogroup elm ELM API
- * @{
- */
+namespace elm {
 /** Flag used in positive random weight calculation */
 const uint32_t POSITIVE_WEIGHT_MASK = 1;
 /** Flag used in negative random weight calculation*/
@@ -164,9 +161,6 @@ class Elm  {
    * @param output Pointer to a GSL Matrix which will store the output values.
    **/
   void NetworkOutput(const gsl_matrix_float* input, gsl_matrix_float* output);
-  /**
-   * @}
-   */
 };
-
+}  // namespace elm
 #endif  // INC_ELM_ELM_HPP_

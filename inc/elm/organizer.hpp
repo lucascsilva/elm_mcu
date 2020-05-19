@@ -13,6 +13,8 @@
 #include "../inc/gsl/gsl_linalg.h"
 #include "../inc/elm/slfn.hpp"
 
+namespace elm {
+
 /**
  * @enum Mode organizer.hpp "inc/elm/oerganizer.hpp"
  * 
@@ -179,5 +181,5 @@ class Organizer {
    */
   float getResult(int index);
 };
-
+}  // namespace elm
 #endif  // INC_ELM_ORGANIZER_HPP_
