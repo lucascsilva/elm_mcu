@@ -65,7 +65,6 @@ void Elm::NetworkOutput(const gsl_matrix_float* input, gsl_matrix_float* output)
     }
     sum_arg+= gsl_matrix_float_get(random_bias, 0, col_counter);  // bias
     gsl_matrix_float_set(hidden_layer_output, 0, col_counter, ActivationFunction(sum_arg));
-    //gsl_matrix_float_set(hidden_layer_output, 0, col_counter, sum_arg);
     sum_arg = 0;
   }
 
@@ -87,7 +86,6 @@ void Elm::HiddenLayerOutput(const gsl_matrix_float* samples, gsl_matrix_float* h
       }
       sum_arg+=gsl_matrix_float_get(random_bias, 0, col_counter);  // bias
       gsl_matrix_float_set(hidden_layer_outputs, row_counter, col_counter, ActivationFunction(sum_arg));
-      //gsl_matrix_float_set(hidden_layer_outputs, row_counter, col_counter, sum_arg);
       sum_arg = 0;
     }
   }

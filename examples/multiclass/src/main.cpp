@@ -17,7 +17,6 @@ int main(void) {
   parameters.output_neurons_count = 5;
   parameters.training_set_count = 700;
   parameters.test_set_count = 300;
-  parameters.output_neuron_type = ADDITIVE;
   parameters.bits = 1;
   Organizer set(parameters);
 
@@ -69,6 +68,7 @@ int main(void) {
     }
     test_counter++;
   }
+  // Wait state. Debugging tools such as GDB may be used here to evaluate the results.
   while (true) {
     led = !led;
     wait(0.5);

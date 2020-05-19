@@ -4,8 +4,8 @@
  * @author Lucas Silva
  */
 
-#ifndef INC_ELM_HPP_
-#define INC_ELM_HPP_
+#ifndef INC_ELM_ELM_HPP_
+#define INC_ELM_ELM_HPP_
 
 #include <cstdint>
 #include <cstddef>
@@ -17,11 +17,15 @@
  * @addtogroup elm ELM API
  * @{
  */
-
+/** Flag used in positive random weight calculation */
 const uint32_t POSITIVE_WEIGHT_MASK = 1;
+/** Flag used in negative random weight calculation*/
 const uint32_t NEGATIVE_WEIGHT_MASK = 0;
+/** Current length of the array of integers */
 const uint8_t RANDOM_INTEGERS_LENGTH = 45;
-
+/** 
+ * Array of random integers from which the random weights are derived.
+ */
 const uint32_t RANDOM_INTEGERS[] = {
   3499211589,
   3890346747,
@@ -69,9 +73,16 @@ const uint32_t RANDOM_INTEGERS[] = {
   3415357570,
   802611726
 };
-
+/**
+ * @class Elm elm.hpp "inc/elm/elm.hpp"
+ * 
+ * @brief Implementation of Extreme Learning Machine. 
+ */
 class Elm  {
  private:
+  /**
+   * @brief Stores the network configuration
+   */
   Slfn network_config_;
   /**
    * @brief Weight connections from input layer to hidden layer
@@ -120,12 +131,12 @@ class Elm  {
 
  public:
   /**
-   * @brief Default Constructor
+   * @brief Constructor
    * 
    * Allocates memory blocks for the weights and bias. Also, sets the values for
    * random weights and random bias
    * 
-   * @param network 
+   * @param network Slfn structure containing the network configuration.
    */
   explicit Elm(const Slfn &network);
   /**
@@ -151,7 +162,6 @@ class Elm  {
    * 
    * @param input Pointer to the GSL Matrix containing the sample.
    * @param output Pointer to a GSL Matrix which will store the output values.
-   * @param network
    **/
   void NetworkOutput(const gsl_matrix_float* input, gsl_matrix_float* output);
   /**
@@ -159,4 +169,4 @@ class Elm  {
    */
 };
 
-#endif  // INC_ELM_HPP_
+#endif  // INC_ELM_ELM_HPP_
