@@ -18,7 +18,7 @@ int main(void) {
   parameters.training_set_count = 700;
   parameters.test_set_count = 300;
   parameters.output_neuron_type = ADDITIVE;
-  parameters.bits = 2;
+  parameters.bits = 1;
   Organizer set(parameters);
 
   // samples
@@ -44,10 +44,10 @@ int main(void) {
     }
   }
 
-  // training
+  // training step
   Elm elm_network(parameters);
   elm_network.TrainElm(set.getSamples(), set.getTargets());
-  // running
+  // run the program and wait for test data
   OutputData output_data;
   DigitalOut led(LED4);
   output_data.output = gsl_matrix_float_alloc(1, parameters.output_neurons_count);
