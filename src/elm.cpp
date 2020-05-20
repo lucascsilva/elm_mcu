@@ -4,14 +4,15 @@
 
 #include "../inc/elm/elm.hpp"
 
+namespace elm {
+
 using std::size_t;
 
-Elm::Elm(const Slfn* network) {
-  random_weights = gsl_matrix_float_alloc(network->input_nodes_count, network->hidden_neurons_count);
-  random_bias = gsl_matrix_float_alloc(network->hidden_layers_count, network->hidden_neurons_count);
-  output_weights = gsl_matrix_float_alloc(network->hidden_neurons_count, network->output_neurons_count);
+Elm::Elm(const Slfn &network_config)
+: network_config_(network_config) {
+  random_weights = gsl_matrix_float_alloc(network_config_.input_nodes_count, network_config_.hidden_neurons_count);
+  random_bias = gsl_matrix_float_alloc(network_config_.hidden_layers_count, network_config_.hidden_neurons_count);
   SetRandomWeights();
-  SetRandomBias();
 }
 
 Elm::~Elm() {
@@ -21,39 +22,51 @@ Elm::~Elm() {
 }
 
 void Elm::SetRandomWeights(void) {
-  size_t weight_counter = 0;
-
+  size_t random_integer_counter = 0;
+  uint8_t i = 0;
+  uint8_t kWeights = 1 << network_config_.bits;
+  float step = 1.0/(kWeights/2);
+  float discrete_weights[256];  // maximum of 8-bit random weights
+  for (uint8_t weight = 0; weight < kWeights/2; weight++) {
+    discrete_weights[weight] = -1 + weight*step;
+    discrete_weights[(kWeights/2) + weight] = 1 - weight*step;
+  }
+  uint32_t bit_mask = 0;
+  for (uint8_t bit_counter = 0; bit_counter < network_config_.bits; bit_counter++) {
+    bit_mask = (0x00000001 << bit_counter) | bit_mask;
+  }
+  float random_weight = -1;  // prevents 'uninitialized variable' warning
   for (size_t col_counter = 0; col_counter < random_weights->size2; col_counter++) {
     for (size_t row_counter = 0; row_counter < random_weights->size1; row_counter++) {
-      gsl_matrix_float_set(random_weights, row_counter, col_counter, random_weights_values[weight_counter++]);
+      random_weight = discrete_weights[(RANDOM_INTEGERS[random_integer_counter] & (bit_mask << i)) >> i];
+      gsl_matrix_float_set(random_weights, row_counter, col_counter, random_weight);
+      i++;
+      if (i > 31) {
+        i = 0;
+        random_integer_counter++;
+      }
     }
+    gsl_matrix_float_set(random_bias, 0, col_counter, random_weight);
   }
 }
 
-void Elm::SetRandomBias(void) {
-  size_t bias_counter = 0;
 
-  for (size_t col_counter = 0; col_counter < random_bias->size2; col_counter++) {
-    gsl_matrix_float_set(random_bias, 0, col_counter, random_bias_values[bias_counter++]);
-  }
-}
-
-void Elm::NetworkOutput(const gsl_matrix_float* input, gsl_matrix_float* output, const Slfn* network) {
+void Elm::NetworkOutput(const gsl_matrix_float* input, gsl_matrix_float* output) {
   float arg;
   float sum_arg = 0;
 
   gsl_matrix_float* hidden_layer_output;
-  hidden_layer_output = gsl_matrix_float_alloc(network->hidden_layers_count, network->hidden_neurons_count);
+  hidden_layer_output = gsl_matrix_float_alloc(network_config_.hidden_layers_count,
+                                              network_config_.hidden_neurons_count);
 
   for (size_t col_counter = 0; col_counter < hidden_layer_output->size2; col_counter++) {
-    for (size_t i_n_counter = 0; i_n_counter < network->input_nodes_count; i_n_counter++) {
+    for (size_t i_n_counter = 0; i_n_counter < network_config_.input_nodes_count; i_n_counter++) {
       arg = (gsl_matrix_float_get(input, i_n_counter, 0)*gsl_matrix_float_get(random_weights, i_n_counter,
                                                                                             col_counter));
       sum_arg+=arg;
     }
     sum_arg+= gsl_matrix_float_get(random_bias, 0, col_counter);  // bias
     gsl_matrix_float_set(hidden_layer_output, 0, col_counter, ActivationFunction(sum_arg));
-    gsl_matrix_float_set(hidden_layer_output, 0, col_counter, sum_arg);
     sum_arg = 0;
   }
 
@@ -63,20 +76,18 @@ void Elm::NetworkOutput(const gsl_matrix_float* input, gsl_matrix_float* output,
   gsl_matrix_float_free(hidden_layer_output);
 }
 
-void Elm::HiddenLayerOutput(const gsl_matrix_float* samples, gsl_matrix_float* hidden_layer_outputs,
-                                                                                const Slfn* network) {
+void Elm::HiddenLayerOutput(const gsl_matrix_float* samples, gsl_matrix_float* hidden_layer_outputs) {
   float arg, sum_arg = 0;
 
   for (size_t row_counter = 0; row_counter < hidden_layer_outputs->size1; row_counter++) {
     for (size_t col_counter = 0; col_counter < hidden_layer_outputs->size2; col_counter++) {
-      for (size_t i_n_counter = 0; i_n_counter < network->input_nodes_count; i_n_counter++) {
+      for (size_t i_n_counter = 0; i_n_counter < network_config_.input_nodes_count; i_n_counter++) {
         arg = (gsl_matrix_float_get(samples, i_n_counter, row_counter)*gsl_matrix_float_get(random_weights, i_n_counter,
                                                                                                           col_counter));
         sum_arg+=arg;
       }
       sum_arg+=gsl_matrix_float_get(random_bias, 0, col_counter);  // bias
       gsl_matrix_float_set(hidden_layer_outputs, row_counter, col_counter, ActivationFunction(sum_arg));
-      gsl_matrix_float_set(hidden_layer_outputs, row_counter, col_counter, sum_arg);
       sum_arg = 0;
     }
   }
@@ -86,39 +97,42 @@ float Elm::ActivationFunction(float arg) {
   return 1/(1+exp(-arg));
 }
 
-void Elm::TrainElm(const gsl_matrix_float* batch_input, gsl_matrix_float* target, const Slfn* network) {
+void Elm::TrainElm(gsl_matrix_float* batch_input, gsl_matrix_float* target) {
   gsl_matrix_float *hidden_layer_outputs;
 
-  // gsl_matrix_float *h_pseudo_inverse;
-  double C = 0.05;
+  double C = 1024;
 
-  hidden_layer_outputs = gsl_matrix_float_alloc(network->training_set_count, network->hidden_neurons_count);
-  // h_pseudo_inverse = gsl_matrix_float_alloc(network->hidden_neurons_count, network->training_set_count);
+  hidden_layer_outputs = gsl_matrix_float_alloc(network_config_.training_set_count, network_config_.hidden_neurons_count);
 
-  HiddenLayerOutput(batch_input, hidden_layer_outputs, network);
+  HiddenLayerOutput(batch_input, hidden_layer_outputs);
+  gsl_matrix_float_free(batch_input);
 
-  if (network->training_set_count > 10*network->hidden_neurons_count) {
-    gsl_matrix_float* reg = gsl_matrix_float_alloc(network->hidden_neurons_count, network->hidden_neurons_count);
+  if (network_config_.training_set_count > 10*network_config_.hidden_neurons_count) {
+    gsl_matrix_float* reg = gsl_matrix_float_alloc(network_config_.hidden_neurons_count, network_config_.hidden_neurons_count);
     gsl_matrix_float_set_identity(reg);
-    gsl_matrix_float_scale(reg, (1/C));
+    gsl_matrix_float_scale(reg, (1.0/C));
     gsl_blas_sgemm(CblasTrans, CblasNoTrans, 1, hidden_layer_outputs, hidden_layer_outputs, 1, reg);
     invertMatrix(reg);
-    gsl_blas_sgemm(CblasTrans, CblasNoTrans, 1, hidden_layer_outputs, target, 0, output_weights);
-    gsl_blas_sgemm(CblasNoTrans, CblasTrans, 1, reg, output_weights, 0, output_weights);
+    output_weights = gsl_matrix_float_alloc(network_config_.hidden_neurons_count, network_config_.output_neurons_count);
+    gsl_matrix_float *aux = gsl_matrix_float_alloc(network_config_.hidden_neurons_count, network_config_.output_neurons_count);
+    gsl_blas_sgemm(CblasTrans, CblasNoTrans, 1, hidden_layer_outputs, target, 0, aux);
+    gsl_blas_sgemm(CblasNoTrans, CblasNoTrans, 1, reg, aux, 0, output_weights);
+    gsl_matrix_float_free(aux);
     gsl_matrix_float_free(reg);
   } else {
-    gsl_matrix_float* reg = gsl_matrix_float_alloc(network->training_set_count, network->training_set_count);
+    gsl_matrix_float* reg = gsl_matrix_float_alloc(network_config_.training_set_count, network_config_.training_set_count);
     gsl_matrix_float_set_identity(reg);
-    gsl_matrix_float_scale(reg, (1/C));
+    gsl_matrix_float_scale(reg, (1.0/C));
     gsl_blas_sgemm(CblasNoTrans, CblasTrans, 1, hidden_layer_outputs, hidden_layer_outputs, 1, reg);
     invertMatrix(reg);
-    gsl_matrix_float *aux = gsl_matrix_float_alloc(network->training_set_count, network->output_neurons_count);
+    gsl_matrix_float *aux = gsl_matrix_float_alloc(network_config_.training_set_count, network_config_.output_neurons_count);
     gsl_blas_sgemm(CblasNoTrans, CblasNoTrans, 1, reg, target, 0, aux);
+    output_weights = gsl_matrix_float_alloc(network_config_.hidden_neurons_count, network_config_.output_neurons_count);
     gsl_blas_sgemm(CblasTrans, CblasNoTrans, 1, hidden_layer_outputs, aux, 0, output_weights);
     gsl_matrix_float_free(aux);
     gsl_matrix_float_free(reg);
   }
-  // output weights calculation
+
   gsl_matrix_float_free(hidden_layer_outputs);
 }
 
@@ -143,3 +157,4 @@ void Elm::invertMatrix(gsl_matrix_float* m) {
     }
   }
 }
+}  // namespace elm

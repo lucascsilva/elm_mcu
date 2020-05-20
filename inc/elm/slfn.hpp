@@ -12,11 +12,22 @@
 
 using std::size_t;
 
+namespace elm {
+/**
+ * @enum NeuronType slfn.hpp "inc/elm/slfn.hpp"
+ * 
+ * @brief Types for a neuron. Not used in current implementation as
+ */
 enum NeuronType {
-  ADDITIVE = 0,
-  SIGMOID
+  ADDITIVE = 0, /**< additive neuron \f$y=wx +b\f$*/
+  SIGMOID /**< Limiter neuron \f$y=f(wx+b)\f$ where \f$f(.)\f$ is the sigmoid function$*/
 };
 
+/**
+ * @struct Slfn slfn.hpp "inc/elm/slfn.hpp"
+ * 
+ * @brief Contains the configuration parameters for a Single Layer FeedForward Network (SLFN).
+ */
 struct Slfn {
   /**
   * @brief Number of input nodes. Usually represents the dimension of 
@@ -43,8 +54,16 @@ struct Slfn {
    * @brief Size of test set
    */
   uint32_t test_set_count;
-
+  /**
+   * @brief Type of activation function for neurons. Currently only additive types, 
+   * so this parameter has no use for now
+   */
   NeuronType output_neuron_type;
+  /**
+   * @brief Number of bits used to encode the random weights. More bits will provide more
+   * possible random weights in the interval [-1 ,1]
+   */
+  uint8_t bits;
 };
-
+}  // namespace elm
 #endif  // INC_ELM_SLFN_HPP_
