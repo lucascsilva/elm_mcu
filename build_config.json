@@ -1,0 +1,8 @@
+{
+  "target_overrides": {
+          "GCC_ARM": {
+              "cxx": ["-Iinc/elm/", "-Iinc/utils/", "-Llib/", "-llibgsl" , "-llibgslcblas"]
+          }
+      
+  }
+}

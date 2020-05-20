@@ -16,7 +16,7 @@ namespace elm {
 /**
  * @enum NeuronType slfn.hpp "inc/elm/slfn.hpp"
  * 
- * @brief Types for a neuron.
+ * @brief Types for a neuron. Not used in current implementation as
  */
 enum NeuronType {
   ADDITIVE = 0, /**< additive neuron \f$y=wx +b\f$*/

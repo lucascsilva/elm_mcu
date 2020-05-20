@@ -16,13 +16,13 @@
 namespace elm {
 
 /**
- * @enum Mode organizer.hpp "inc/elm/oerganizer.hpp"
+ * @enum Mode organizer.hpp "inc/elm/organizer.hpp"
  * 
  * @brief Defines the current network mode, either train or test.
  */ 
 enum Mode {
-  TRAIN = 0,
-  TEST
+  TRAIN = 0, /**< Training step*/
+  TEST       /**< Testing*/
 };
 
 /**
