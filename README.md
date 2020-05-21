@@ -35,19 +35,20 @@ the workspace with
 
 ```mbed new [program_name]```
 
-then put the files here inside the newly created `program_name` folder. The file tree should look like
+then put the files here inside a new folder (e.g. `elm/`) in the newly created `program_name` folder. The file tree should look like
 ```
-inc/
-lib/
-src/
-examples/
-mbed-os/
+|— program_name
+   |— elm/
+      |—inc/
+      |—lib/
+      |—src/
+      |—examples/
+   |—mbed-os/
 ```
 Target and toolchain must also be [configured](https://os.mbed.com/docs/mbed-os/v5.15/tools/configuration-options.html). 
 This application is run using DISCO_F407VG and GCC_ARM respectively (install the [ARM toolchain](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads) in case it is missing.
 
-The file `build_config.json` shall be invoked in compilation using `mbed compile --app-config build_config.json` as it 
-contains the include paths and library path flags that are passed to the compiler.
+The file `build_config.json` shall be invoked in compilation by using, referring to the above example, `mbed compile --app-config elm/build_config.json` as it contains the include paths and library path flags that are passed to the compiler.
 
 # Usage
 
