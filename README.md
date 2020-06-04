@@ -1,7 +1,7 @@
 # ELM API for microcontrollers
 
-This bundle contains source files for a C++ implementation of Extreme Learning Machines (ELM) in microcontrollers. It is 
-based on MbedOS and a GSL port for ARM Cortex-M4,which is provided as static library. 
+This bundle contains source files for a C++ implementation of Extreme Learning Machines (ELM) for microcontrollers. It is 
+based on MbedOS and a GSL port for ARM Cortex-M4, which is provided as static library. 
 
 Using this application, it is possible to train an artificial neural network in the single layer feedforward network (SLFN)
  topology following the ELM theory, and use it later once trained.
@@ -15,7 +15,7 @@ There is though one difference in this application, which is random weight gener
 so that the random weights connecting the input layer to the hidden layer will have 2^b distinct values uniformly sorted within 
 the interval [-1,1], where b is the bit count. For instance, selecting b=1 will lead to random weights -1 and 1 assigned in the
 hidden laye. Selecting b=2 will provide a pool containing the values -1, -0.5, 0.5 and 1, from which the random weights will be 
-assigned randomly.
+assigned randomly, and so on for grater values of b.
 
 This application was designed originally to work with ultrasonic signals from weld beads, on a STMF4 Discovery development board,
 as part of a scientific research. Users are encouraged to employ it in scientific research, engineering and robotic projects and 
