@@ -21,11 +21,7 @@ This application was designed originally to work with ultrasonic signals from we
 as part of a scientific research. Users are encouraged to employ it in scientific research, engineering and robotic projects and 
 contribute to its development. In case of using this application in reasearch, please cite it:
 
-Author: Lucas Cruz da Silva
-
-e-mail: lucas.silva@ymail.com
-
-Date: May 2020
+Lucas C. Silva,Computers and Electrical Engineering, https://doi.org/10.1016/j.compeleceng.2020.10689
 
 # Installation
 
